@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+     "lib": [
+      "ES2020"
+     ],
+    "target": "es2020",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "moduleResolution": "NodeNext",
+    "outDir": "./build",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "client"
+  ]
+}
