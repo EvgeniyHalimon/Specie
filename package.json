@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "prepare": "husky install ./husky"
+    "prepare": "husky install",
+    "fix:client": "cd client && npm run format",
+    "fix:server": "cd server && npm run lint:fix"
   },
   "devDependencies": {
     "husky": "^8.0.3"
