@@ -12,9 +12,7 @@ app.use(morgan('tiny'));
 app.use(express.static('public'));
 
 app.get('/ping', async (_req, res) => {
-  res.send({
-    message: 'pong!',
-  });
+  res.send({ message: 'pong!' });
 });
 
 app.listen(PORT, () => {
