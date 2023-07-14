@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express, { Application } from 'express';
 import morgan from 'morgan';
 
+
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
