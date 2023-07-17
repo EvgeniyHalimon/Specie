@@ -24,7 +24,7 @@ router.post('/login', validate(loginSchema, {}, {}), async (req: Request, res: R
 router.post('/register', validate(registerSchema, {}, {}), async (req: Request, res: Response) => {
   try {
     await authorizationService.register(req.body);
-    res.status(201).json({ 'success': `New username ${req.body.username} created!` });
+    res.status(201).json({ 'success': `New user ${req.body.firstname} ${req.body.lastname} created!` });
   } catch (err: any) {
     res.status(500).json({ 'message': err.message });
   }

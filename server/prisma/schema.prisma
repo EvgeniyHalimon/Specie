@@ -16,6 +16,7 @@ model User {
   firstname  String
   lastname  String
   password  String
+  bill Bill[]
 }
 
 model Category {
@@ -41,4 +42,6 @@ model Bill {
   categoryID Int
   subcategory   Subcategory @relation(fields: [subcategoryID], references: [id])
   subcategoryID Int
+  user User @relation(fields: [userID], references: [id])
+  userID Int
 }

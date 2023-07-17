@@ -23,7 +23,7 @@ const verifyJWT = (req: CustomRequest, res: Response, next: NextFunction): void 
     req.url === '/auth/refresh' ? REFRESH_KEY : ACCESS_KEY,
     (err: any, decoded: IDecoded) => {
       if(err) throw new CustomError({ message: 'Forbidden', status: 403 });
-      req.id = decoded.userInfo.id;
+      req.id = Number(decoded.userInfo.id);
       next();
     },
   );
