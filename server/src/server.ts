@@ -1,14 +1,16 @@
 import dotenv from 'dotenv';
 import express, { Application, NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { ValidationError } from 'express-validation';
 import morgan from 'morgan';
+import passport from 'passport';
 
 import authController from './modules/authorization/authorization.controller';
 import billController from './modules/bills/bills.controller';
 import categoryController from './modules/categories/categories.controller';
 import subcategoryController from './modules/subcategories/subcategories.controller';
 import userController from './modules/users/users.controller';
-import verifyJWT from './shared/middleware/verifyJWT';
+/* import verifyJWT from './shared/middleware/verifyJWT'; */
 
 
 dotenv.config();
@@ -20,6 +22,9 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((err: ValidationError, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ValidationError) {
@@ -30,7 +35,7 @@ app.use((err: ValidationError, req: Request, res: Response, next: NextFunction) 
 });
 
 // routes
-app.use(verifyJWT);
+/* app.use(verifyJWT); */
 app.use('/auth', authController);
 app.use('/users', userController);
 app.use('/category', categoryController);

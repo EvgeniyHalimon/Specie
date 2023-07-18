@@ -15,7 +15,9 @@ model User {
   email String @unique
   firstname  String
   lastname  String
-  password  String
+  password  String?
+  googleID String?
+  source String?
   bill Bill[]
 }
 

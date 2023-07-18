@@ -72,6 +72,24 @@ const authorizationService = {
       return generateTokens(foundUser);
     }
   },
+
+  generateAccessToken: (user) => {
+    const payload = {
+      userId: user.id,
+      firstname: user.name.givenName,
+      lastname: user.name.familyName,
+    };
+
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: '1d', 
+    });
+
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: '1d',  
+    });
+
+    return { accessToken, refreshToken };
+  },
 };
 
 export { authorizationService };

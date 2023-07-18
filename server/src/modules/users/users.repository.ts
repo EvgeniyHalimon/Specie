@@ -1,5 +1,5 @@
 import { user } from '../../shared/prismaClient';
-import { IUser } from '../../shared/types/types';
+import { IGoogleUser, IUser } from '../../shared/types/types';
 
 const userRepository = {
   findUserById: async (id: number) => {
@@ -25,6 +25,17 @@ const userRepository = {
         password: userObject.password,
         firstname: userObject.firstname,
         lastname: userObject.lastname,
+      },
+    });
+  },
+
+  createNewUserWithGoogle: async(userObject: IGoogleUser) => {
+    return await user().create({
+      data: { 
+        email: userObject.email,
+        firstname: userObject.firstname,
+        lastname: userObject.lastname,
+        source: userObject.source,
       },
     });
   },

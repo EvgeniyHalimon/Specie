@@ -6,10 +6,16 @@ export interface CustomRequest extends Request {
 
 export interface IUser {
   id?: number,
+  googleID?: string,
   email: string,
   password?: string,
   firstname: string,
   lastname: string,
+  source?: string
+}
+
+export interface IGoogleUser extends Omit<IUser, 'password'>{
+  source: string,
 }
 
 export interface IBill {
