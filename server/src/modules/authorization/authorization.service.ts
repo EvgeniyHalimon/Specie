@@ -5,7 +5,7 @@ import jwt, { Secret } from 'jsonwebtoken';
 import { CustomError } from '../../shared/CustomError';
 import { SALT_ROUNDS } from '../../shared/constants/constants';
 
-import { IUser } from '../../shared/types/types';
+import { IGoogleUser, IUser } from '../../shared/types/types';
 import { userRepository } from '../users/users.repository';
 import { userService } from '../users/users.service';
 
@@ -16,7 +16,7 @@ dotenv.config();
 const ACCESS_KEY: Secret = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_KEY: Secret = process.env.REFRESH_TOKEN_SECRET;
 
-const generateTokens = (foundUser: IUser): ITokens => {
+export const generateTokens = (foundUser: IUser): ITokens => {
   const accessToken = jwt.sign(
     {
       'userInfo': {
@@ -49,6 +49,15 @@ const authorizationService = {
     return generateTokens(foundUser);
   },
 
+  loginWithGoogle: async (body: IGoogleUser) : Promise<ITokens | undefined> => {
+    const foundUser = await userService.findByEmail(body.email);
+  
+    if(!foundUser){
+      throw new CustomError({ message: 'User doesnt exist', status: 400 });
+    }
+    return generateTokens(foundUser);
+  },
+
   register: async (body: IUser): Promise<void> => {
     const foundUser = await userService.checkIfUserExist(body.email);
     if(foundUser){
@@ -73,22 +82,18 @@ const authorizationService = {
     }
   },
 
-  generateAccessToken: (user) => {
-    const payload = {
-      userId: user.id,
-      firstname: user.name.givenName,
-      lastname: user.name.familyName,
-    };
-
-    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '1d', 
+  registerWithGoogle: async (body: IGoogleUser): Promise<void> => {
+    const foundUser = await userService.checkIfUserExist(body.email);
+    if(foundUser){
+      throw new CustomError({ message: 'User already exist', status: 400 });
+    }
+    
+    //create and store the new user
+    await userRepository.createNewUser({
+      'firstname': body.firstname,
+      'lastname': body.lastname,
+      'email': body.email,
     });
-
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: '1d',  
-    });
-
-    return { accessToken, refreshToken };
   },
 };
 

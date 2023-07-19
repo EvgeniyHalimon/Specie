@@ -10,6 +10,10 @@ import billController from './modules/bills/bills.controller';
 import categoryController from './modules/categories/categories.controller';
 import subcategoryController from './modules/subcategories/subcategories.controller';
 import userController from './modules/users/users.controller';
+
+import './shared/middleware/passport';
+import './shared/middleware/local';
+import './shared/middleware/google';
 /* import verifyJWT from './shared/middleware/verifyJWT'; */
 
 
