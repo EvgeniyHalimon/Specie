@@ -17,7 +17,9 @@ model User {
   lastname  String
   password  String?
   googleID String?
-  source String?
+  source String?  @default("via email")
+  confirmationCode String?
+  status Status @default(pending)
   bill Bill[]
 }
 
@@ -40,10 +42,16 @@ model Bill {
   id Int @id @default(autoincrement())
   price Int
   comment String
+  createdAt  DateTime   @default(now())
   category   Category @relation(fields: [categoryID], references: [id])
   categoryID Int
   subcategory   Subcategory @relation(fields: [subcategoryID], references: [id])
   subcategoryID Int
   user User @relation(fields: [userID], references: [id])
   userID Int
+}
+
+enum Status{
+  pending
+  active
 }

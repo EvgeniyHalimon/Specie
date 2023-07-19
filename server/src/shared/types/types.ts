@@ -11,7 +11,9 @@ export interface IUser {
   password?: string,
   firstname: string,
   lastname: string,
-  source?: string
+  source?: string,
+  confirmationCode: string, 
+  status: string
 }
 
 export interface IGoogleUser extends Omit<IUser, 'password'>{
@@ -22,6 +24,7 @@ export interface IBill {
   id: number,
   price: number,
   comment: string,
+  createdAt: string,
   categoryID: number,
   subcategoryID: number,
   userID: number,
