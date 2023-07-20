@@ -34,6 +34,8 @@ passport.use(
           firstname,
           lastname,
           source,
+          confirmationCode: '',
+          status: 'active',
         });
         return done(null, newUser);
       }

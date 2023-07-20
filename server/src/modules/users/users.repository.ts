@@ -18,6 +18,14 @@ const userRepository = {
     });
   },
 
+  findUserByConfirmationCode: async (confirmationCode: string) => {
+    return await user().findFirst({
+      where: {
+        confirmationCode: confirmationCode,
+      },
+    });
+  },
+
   createNewUser: async(userObject: IUser) => {
     return await user().create({
       data: { 
@@ -36,6 +44,17 @@ const userRepository = {
         firstname: userObject.firstname,
         lastname: userObject.lastname,
         source: userObject.source,
+      },
+    });
+  },
+
+  updateStatus: async (id: number) => {
+    return await user().update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: 'active',
       },
     });
   },

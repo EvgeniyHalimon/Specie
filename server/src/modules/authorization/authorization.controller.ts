@@ -14,6 +14,9 @@ const router = express.Router();
 router.post('/login', validate(loginSchema, {}, {}), async (req: any, res: Response) => {
   try {
     const token: ITokens = await authorizationService.login(req?.user || req.body);
+    if(!token){
+      res.json({ message: 'Pending Account. Please Verify Your Email!' });
+    }
     // Send authorization roles and access token to username
     res.json({ refreshToken: token.refreshToken, accessToken: token.accessToken });
   } catch (error: any) {
@@ -24,7 +27,10 @@ router.post('/login', validate(loginSchema, {}, {}), async (req: any, res: Respo
 router.post('/register', validate(registerSchema, {}, {}), async (req: Request, res: Response) => {
   try {
     await authorizationService.register(req.body);
-    res.status(201).json({ 'success': `New user ${req.body.firstname} ${req.body.lastname} created!` });
+    res.status(201).json({ 
+      success: `New user ${req.body.firstname} ${req.body.lastname} created!`, 
+      message: 'User was registered successfully! Please check your email', 
+    });
   } catch (err: any) {
     res.status(500).json({ 'message': err.message });
   }
@@ -36,6 +42,14 @@ router.get('/refresh', async (req: CustomRequest, res: Response) => {
     res.json({ refreshToken: token.refreshToken, accessToken: token.accessToken });
   } catch (error: any) {
     res.status(500).json({ 'message': error.message });
+  }
+});
+
+router.get('/confirm/:confirmationCode', async (req: Request, res: Response) => {
+  try {
+    await authorizationService.verifyUser(req.params.confirmationCode);
+  } catch (err: any) {
+    res.status(500).json({ 'message': err.message });
   }
 });
 
