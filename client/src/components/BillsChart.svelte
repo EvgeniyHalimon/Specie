@@ -13,7 +13,7 @@
 		{ ages: '≥65', count: '629032' }
 	]; // or pass data to component as prop
 
-	const width = 701; // the outer width of the chart, in pixels
+	const width = 600; // the outer width of the chart, in pixels
 	const height = width; // the outer height of the chart, in pixels
 	const percent = false; // format values as percentages (true/false)
 	const fontSize = 16; // the font size of the x and y values

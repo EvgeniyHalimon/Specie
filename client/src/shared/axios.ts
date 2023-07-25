@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BASE_URL, REFRESH } from './constants';
 import { getAccessToken, saveTokens, getRefreshToken, removeTokens } from './tokensWorkshop';
 
-const useAxios = () => {
+const axiosWorker = () => {
 	const accessToken = getAccessToken();
 	const refreshToken = getRefreshToken();
 	const axiosInstance = axios.create({
@@ -62,7 +62,7 @@ const useAxios = () => {
 		}
 	);
 
-	return { get, post, put, deleteData: purge };
+	return { get, post, put, purge };
 };
 
-export default useAxios;
+export default axiosWorker;

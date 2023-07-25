@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import session from 'express-session';
@@ -14,7 +15,7 @@ import userController from './modules/users/users.controller';
 import './shared/middleware/passport';
 import './shared/middleware/local';
 import './shared/middleware/google';
-/* import verifyJWT from './shared/middleware/verifyJWT'; */
+import verifyJWT from './shared/middleware/verifyJWT';
 
 
 dotenv.config();
@@ -25,6 +26,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('public'));
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -39,7 +41,7 @@ app.use((err: ValidationError, req: Request, res: Response, next: NextFunction) 
 });
 
 // routes
-/* app.use(verifyJWT); */
+app.use(verifyJWT);
 app.use('/auth', authController);
 app.use('/users', userController);
 app.use('/category', categoryController);

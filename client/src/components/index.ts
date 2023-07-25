@@ -1,1 +1,1 @@
-export { default as BillModal } from "./BillModal.svelte";
+export { default as BillModal } from './BillModal.svelte';

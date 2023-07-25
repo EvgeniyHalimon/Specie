@@ -1,19 +1,28 @@
+import { browser } from '$app/environment';
 import type { ITokens } from './types';
 
 export const saveTokens = (data: ITokens) => {
-	localStorage.setItem('specie_accessToken', data.accessToken);
-	localStorage.setItem('specie_refreshToken', data.refreshToken);
+	if (browser) {
+		localStorage.setItem('specie_accessToken', data.accessToken);
+		localStorage.setItem('specie_refreshToken', data.refreshToken);
+	}
 };
 
 export const removeTokens = () => {
-	localStorage.removeItem('specie_accessToken');
-	localStorage.removeItem('specie_refreshToken');
+	if (browser) {
+		localStorage.removeItem('specie_accessToken');
+		localStorage.removeItem('specie_refreshToken');
+	}
 };
 
 export const getRefreshToken = () => {
-	return localStorage.getItem('specie_refreshToken') ?? '';
+	if (browser) {
+		return localStorage.getItem('specie_refreshToken') ?? '';
+	}
 };
 
 export const getAccessToken = () => {
-	return localStorage.getItem('specie_accessToken') ?? '';
+	if (browser) {
+		return localStorage.getItem('specie_accessToken') ?? '';
+	}
 };
