@@ -1,5 +1,6 @@
 <script lang="ts">
 	import BillModal from '$components/BillModal.svelte';
+	import BillModalContent from '$components/BillModalContent.svelte';
 	import BillsChart from '$components/BillsChart.svelte';
 	import BillsTable from '$components/BillsTable.svelte';
 	import axiosWorker from '$shared/axios';
@@ -29,16 +30,18 @@
 		getCategories();
 		getSubcategories();
 	};
-	onMount(() => {
+	onMount(async () => {
 		getData();
 	});
 </script>
 
-<div class="flex justify-between w-full">
+<div class="flex justify-between w-full gap-10">
 	<BillsChart />
 	<div class="flex flex-column">
 		{#if open}
-			<BillModal bind:open />
+			<BillModal bind:open>
+				<BillModalContent/>
+			</BillModal>
 		{/if}
 		<div class="flex flex-col items-center gap-3">
 			<button on:click={openBillModal}>Create bill</button>
