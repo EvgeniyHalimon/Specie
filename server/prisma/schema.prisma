@@ -27,7 +27,6 @@ model Category {
   id            Int             @id @default(autoincrement())
   name          String          @unique
   subcategory Subcategory[]
-  bill Bill[]
 }
 
 model Subcategory {
@@ -35,17 +34,14 @@ model Subcategory {
   name       String     @unique
   category   Category @relation(fields: [categoryID], references: [id])
   categoryID Int
-  bill Bill[]
 }
 
 model Bill {
   id Int @id @default(autoincrement())
-  price Int
+  price Decimal
   comment String
   createdAt  DateTime   @default(now())
-  category   Category @relation(fields: [categoryID], references: [id])
   categoryID Int
-  subcategory   Subcategory @relation(fields: [subcategoryID], references: [id])
   subcategoryID Int
   user User @relation(fields: [userID], references: [id])
   userID Int

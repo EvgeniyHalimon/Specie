@@ -30,8 +30,9 @@ router.get('/', async (req: CustomRequest, res: Response) => {
 router.post('/',  validate(createBillSchema, {}, {}), async (req: CustomRequest, res: Response) => {
   try {
     const createdBill = await billService.create(req.id, req.body);
-    res.status(201).json({ data : createdBill, message: 'New bill is created' }); 
+    res.status(200).json(createdBill);
   } catch (error) {
+    console.log('🚀 ~ file: bills.controller.ts:37 ~ router.post ~ error:', error);
     res.status(error.status).json({ 'message': error.message });  
   }
 });

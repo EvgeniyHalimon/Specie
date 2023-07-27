@@ -4,7 +4,7 @@ export const billRepository = {
   getAll: async (id: number) => {
     return await bill().findMany({
       where: {
-        id: id,
+        userID: id,
       },
     });
   },
@@ -27,7 +27,7 @@ export const billRepository = {
     return await bill().create({
       data: {
         ...data,
-        id: id,
+        userID: id,
       },
     }); 
   }, 

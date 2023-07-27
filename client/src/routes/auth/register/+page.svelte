@@ -66,7 +66,9 @@
 		class="h-8 pl-2 mb-2 text-black border-0 rounded-md caret-black bg-stone-400"
 	/>
 	{#if !message}
-		<button type="submit" class="self-center p-2 bg-gray-600 rounded-md hover:bg-gray-500">Register</button>
+		<button type="submit" class="self-center p-2 bg-gray-600 rounded-md hover:bg-gray-500"
+			>Register</button
+		>
 	{:else}
 		<p class="text-center text-green-700">{`✔️ ${message}`}</p>
 	{/if}

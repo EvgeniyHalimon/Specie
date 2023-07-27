@@ -8,22 +8,22 @@
 	import './app.css';
 
 	let tokens: any;
-	console.log("🚀 ~ file: +layout.svelte:11 ~ tokens:", tokens)
+	console.log('🚀 ~ file: +layout.svelte:11 ~ tokens:', tokens);
 	let route: any;
 
 	onMount(() => {
 		tokens = getAccessToken();
-		console.log("🚀 ~ file: +layout.svelte:24 ~ onMount ~ tokens:", tokens)
+		console.log('🚀 ~ file: +layout.svelte:24 ~ onMount ~ tokens:', tokens);
 		route = $page.route.id;
 	});
 
 	afterNavigate((value) => {
-	console.log("🚀 ~ file: +layout.svelte:14 ~ afterNavigate ~ value:", value)
+		console.log('🚀 ~ file: +layout.svelte:14 ~ afterNavigate ~ value:', value);
 		const isAuthRoute = /^\/auth\/.*/.test(String(value.to?.route.id));
 		if (!tokens && !isAuthRoute) {
 			goto('/auth/login', { noScroll: true, replaceState: true });
 		}
-	})
+	});
 
 	$: page.subscribe((value) => {
 		route = value.route.id;
@@ -37,31 +37,28 @@
 
 <div class="w-screen p-8 app">
 	<nav class="flex items-center justify-between pb-4">
-		
-			<div class="flex items-center gap-2">
-				<h1 class="text-3xl">Specie</h1>
-				<Coin />
+		<div class="flex items-center gap-2">
+			<h1 class="text-3xl">Specie</h1>
+			<Coin />
+		</div>
+		{#if tokens}
+			<button type="submit" on:click={submitLogout} class="btn btn-primary">Logout</button>
+		{:else}
+			<div class="flex gap-3">
+				{#if route === '/auth/register'}
+					<a href="/auth/login" class="btn btn-primary">Login</a>
+				{/if}
+				{#if route === '/auth/login'}
+					<a href="/auth/register" class="btn btn-secondary">Register</a>
+				{/if}
 			</div>
-			{#if tokens}
-				<button type="submit" on:click={submitLogout} class="btn btn-primary">Logout</button>
-			{:else}
-				<div class="flex gap-3">
-					{#if route === '/auth/register'}
-						<a href="/auth/login" class="btn btn-primary">Login</a>
-					{/if}
-					{#if route === '/auth/login'}
-						<a href="/auth/register" class="btn btn-secondary">Register</a>
-					{/if}
-				</div>
-			{/if}
-		
+		{/if}
 	</nav>
 
 	<main>
 		<slot />
 	</main>
 </div>
-
 
 <style>
 	.app {

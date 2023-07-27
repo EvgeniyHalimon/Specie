@@ -1,3 +1,17 @@
+<script lang="ts">
+	import { bills, categories, subcategories } from '$store/store';
+
+	const getCategory = (id: number) => {
+		const category = $categories.filter((c) => c.id == id);
+		return category[0].name;
+	};
+
+	const getSubcategory = (id: number) => {
+		const category = $subcategories.filter((c) => c.id == id);
+		return category[0].name;
+	};
+</script>
+
 <table>
 	<thead>
 		<tr>
@@ -7,49 +21,36 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td>Cell 1</td>
-			<td>Cell 2</td>
-			<td>Cell 3</td>
-		</tr>
-		<tr>
-			<td>Cell 1</td>
-			<td>Cell 2</td>
-			<td>Cell 3</td>
-		</tr>
-		<tr>
-			<td>Cell 1</td>
-			<td>Cell 2</td>
-			<td>Cell 3</td>
-		</tr>
-		<tr>
-			<td>Cell 1</td>
-			<td>Cell 2</td>
-			<td>Cell 3</td>
-		</tr>
-		<tr>
-			<td>Cell 1</td>
-			<td>Cell 2</td>
-			<td>Cell 3</td>
-		</tr>
+		{#each $bills as bill}
+			<tr>
+				<td class="hover:bg-slate-300">{getCategory(bill.categoryID)}</td>
+				<td class="border-x-[#c0c0c0] border-r border-l">{getSubcategory(bill.subcategoryID)}</td>
+				<td>{bill.price}</td>
+			</tr>
+		{/each}
 	</tbody>
 </table>
 
 <style>
 	table {
-		width: 400px;
+		width: 450px;
 		border-collapse: collapse;
 		overflow: hidden;
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 		border-radius: 6px;
+		background-image: radial-gradient(
+				50% 50% at 50% 50%,
+				rgba(220, 220, 220, 0.75) 0%,
+				rgba(255, 255, 255, 0) 100%
+			),
+			linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
 	}
 
 	th,
 	td {
 		padding: 15px;
-		background-color: grey;
 		text-align: center;
-		color: #fff;
+		color: rgba(0, 0, 0, 0.822);
 	}
 
 	th {
@@ -58,25 +59,20 @@
 	}
 
 	thead th {
-		background-color: #55608f;
+		color: white;
+		background-color: #7285d5;
 	}
 
-	tbody tr:hover {
-		background-color: rgba(255, 255, 255, 0.3);
+	tbody tr {
+		border-bottom: 1px solid silver;
 	}
 
-	tbody td {
-		position: relative;
+	tbody tr:last-child {
+		border-bottom: none;
 	}
 
-	tbody td:hover:before {
-		content: '';
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: -9999px;
-		bottom: -9999px;
-		background-color: rgba(255, 255, 255, 0.2);
-		z-index: -1;
+	.b {
+		border-right: 1px solid silver;
+		border-left: 1px solid silver;
 	}
 </style>

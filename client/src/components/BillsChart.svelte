@@ -3,15 +3,8 @@
 	// @ts-ignore
 	import * as d3 from 'd3';
 
-	let data = [
-		{ ages: '<18', count: '727432' },
-		{ ages: '18-24', count: '341435' },
-		{ ages: '25-34', count: '444509' },
-		{ ages: '35-44', count: '426967' },
-		{ ages: '45-54', count: '480565' },
-		{ ages: '55-64', count: '515347' },
-		{ ages: '≥65', count: '629032' }
-	]; // or pass data to component as prop
+	export let data;
+	console.log('🚀 ~ file: BillsChart.svelte:17 ~ data:', data);
 
 	const width = 600; // the outer width of the chart, in pixels
 	const height = width; // the outer height of the chart, in pixels
@@ -29,6 +22,7 @@
 	const padAngle = stroke === 'none' ? 1 / outerRadius : 0; // angular separation between wedges
 
 	const x = Object.keys(data[0])[0]; // given d in data, returns the (ordinal) x-value
+	console.log('🚀 ~ file: BillsChart.svelte:34 ~ x:', x);
 	const y = Object.keys(data[0])[1]; // given d in data, returns the (quantitative) y-value
 	// @ts-ignore
 	const xVals = data.map((el) => el[x]);

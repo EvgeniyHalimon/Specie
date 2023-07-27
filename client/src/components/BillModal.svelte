@@ -2,34 +2,34 @@
 	export let open: boolean;
 	let dialog: HTMLDialogElement;
 	$: if (dialog && open) dialog.showModal();
-  
+
 	// Event listener to close the dialog on Escape key press
 	const handleKeyPress = (event: KeyboardEvent) => {
-	  if (event.key === "Escape") {
-		dialog.close();
-	  }
+		if (event.key === 'Escape') {
+			dialog.close();
+		}
 	};
-  
+
 	// Function to handle dialog close
 	const handleClose = () => {
-	  dialog.close();
+		dialog.close();
 	};
-  </script>
-  
-  <!-- ARIA attributes added for accessibility -->
-  <dialog
+</script>
+
+<!-- ARIA attributes added for accessibility -->
+<dialog
 	bind:this={dialog}
 	on:close={() => (open = false)}
 	on:keydown={handleKeyPress}
 	role="dialog"
 	aria-modal="true"
-  >
+>
 	<div class="flex flex-col justify-between h-full gap-4 cursor-default">
-	  <h1>BILL MODAL</h1>
-	  <slot />
-	  <button on:click={handleClose} class="self-end">Close</button>
+		<h1>BILL MODAL</h1>
+		<slot />
+		<button on:click={handleClose} class="self-end">Close</button>
 	</div>
-  </dialog>
+</dialog>
 
 <style>
 	dialog {
@@ -39,11 +39,11 @@
 		padding: 0;
 		cursor: default;
 		background-image: radial-gradient(
-			50% 50% at 50% 50%,
-			rgba(255, 255, 255, 0.75) 0%,
-			rgba(255, 255, 255, 0) 100%
-		),
-		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
+				50% 50% at 50% 50%,
+				rgba(255, 255, 255, 0.75) 0%,
+				rgba(255, 255, 255, 0) 100%
+			),
+			linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
 	}
 
 	dialog::backdrop {

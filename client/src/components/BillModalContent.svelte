@@ -1,7 +1,8 @@
 <script lang="ts">
 	import axiosWorker from '$shared/axios';
 	import { POST_BILL } from '$shared/constants';
-	import { categories, subcategories } from '$store/store';
+	import { bills, categories, filteredSubcategories, subcategories } from '$store/store';
+	import { onMount, afterUpdate } from 'svelte';
 	import Select from './Select.svelte';
 	let categoryValue = 1;
 	let subcategoryValue = 1;
@@ -13,27 +14,45 @@
 	const register = async () => {
 		try {
 			const { data } = await post(POST_BILL, {
-                price: price,
-                comment: comment,
-                categoryID: categoryValue,
-                subcategoryID: subcategoryValue
-            });
-			console.log('🚀 ~ file: +page.svelte:23 ~ register ~ data:', data);
+				price: price,
+				comment: comment,
+				categoryID: categoryValue,
+				subcategoryID: subcategoryValue
+			});
+			console.log('🚀 ~ file: BillModalContent.svelte:22 ~ register ~ data:', data);
+			categoryValue = 1;
+			subcategoryValue = 1;
+			comment = '';
+			price = 0;
+			bills.set([...$bills, data]);
 		} catch (err: any) {
 			console.log('🚀 ~ file: +page.svelte:24 ~ login ~ err:', err);
 		}
 	};
+
+	const filterSubcategories = () => {
+		const filtered = $subcategories.filter((sub) => sub.categoryID === categoryValue);
+		filteredSubcategories.set(filtered);
+	};
+
+	afterUpdate(filterSubcategories);
+
+	onMount(() => {
+		filterSubcategories();
+	});
 </script>
 
-<form on:submit|preventDefault={register} class="flex flex-col justify-between h-full gap-4 cursor-default">
+<form
+	on:submit|preventDefault={register}
+	class="flex flex-col justify-between h-full gap-4 cursor-default"
+>
 	<Select bind:value={categoryValue} selectData={$categories} />
-	<Select
-		bind:value={subcategoryValue}
-		selectData={$subcategories.filter((sub) => sub.categoryID === categoryValue)}
-	/>
+	<Select bind:value={subcategoryValue} selectData={$filteredSubcategories} />
 	<label for="price">Price</label>
 	<input
 		type="number"
+		min="1"
+		step="any"
 		id="price"
 		name="price"
 		bind:value={price}

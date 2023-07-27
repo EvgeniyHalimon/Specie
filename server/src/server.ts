@@ -23,14 +23,21 @@ const PORT = process.env.PORT || 4000;
 
 const app: Application = express();
 
+const corsOptions = {
+  origin: ['http://localhost:5173'],
+};
+app.use(cors(corsOptions));
+
+
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('public'));
-app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 app.use((err: ValidationError, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ValidationError) {
