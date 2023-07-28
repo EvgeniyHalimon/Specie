@@ -1,10 +1,15 @@
-<script>
+<script lang="ts">
 	// @ts-nocheck
 	// @ts-ignore
 	import * as d3 from 'd3';
+	import BillModal from './BillModal.svelte';
+	import { bills, subcategories } from '$store/store';
+	import { getName } from '$shared/utils';
+	import SubcategoryBillChart from './SubcategoryBillChart.svelte';
 
 	export let data;
-	console.log('🚀 ~ file: BillsChart.svelte:17 ~ data:', data);
+	let open = false;
+	let billsData;
 
 	const width = 600; // the outer width of the chart, in pixels
 	const height = width; // the outer height of the chart, in pixels
@@ -22,12 +27,14 @@
 	const padAngle = stroke === 'none' ? 1 / outerRadius : 0; // angular separation between wedges
 
 	const x = Object.keys(data[0])[0]; // given d in data, returns the (ordinal) x-value
-	console.log('🚀 ~ file: BillsChart.svelte:34 ~ x:', x);
 	const y = Object.keys(data[0])[1]; // given d in data, returns the (quantitative) y-value
+	const ids = Object.keys(data[0])[2]; // given d in data, returns the (quantitative) y-value
 	// @ts-ignore
 	const xVals = data.map((el) => el[x]);
 	// @ts-ignore
 	let yVals = data.map((el) => Number(el[y]));
+	let catIds = data.map((el) => el[ids]);
+	console.log('🚀 ~ file: BillsChart.svelte:34 ~ catIds:', catIds);
 	if (percent) {
 		const total = yVals.reduce((a, b) => a + b, 0);
 		yVals = yVals.map((el) => el / total);
@@ -51,16 +58,35 @@
 	const arcPath = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
 
 	const arcLabel = d3.arc().innerRadius(labelRadius).outerRadius(labelRadius);
+
+	const openSubcategoryModal = (id: number) => {
+		open = !open;
+		let temporary = $bills.filter((bill) => bill.categoryID == id);
+		billsData = temporary.map((bill) => {
+			return {
+				subcategory: getName(bill.subcategoryID, $subcategories),
+				price: Number(bill.price), //da hell?!
+				subcategoryID: bill.subcategoryID
+			};
+		});
+	};
 </script>
 
-<svg {width} {height} viewBox="{-width / 2} {-height / 2} {width} {height}">
+<svg
+	width={width - 100}
+	height={height - 100}
+	viewBox="{-width / 2} {-height / 2} {width} {height}"
+>
 	{#each wedges as wedge, i}
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<path
-			fill={colors[i]}
+			fill={colors[i] || '#8f0da4'}
 			d={arcPath(wedge)}
 			{stroke}
 			stroke-width={strokeWidth}
 			stroke-linejoin={strokeLinejoin}
+			on:click={() => openSubcategoryModal(catIds[i])}
 		/>
 		<g text-anchor="middle" transform="translate({arcLabel.centroid(wedge)})">
 			<text font-size={fontSize}>
@@ -72,3 +98,9 @@
 		</g>
 	{/each}
 </svg>
+
+{#if open === true}
+	<BillModal bind:open>
+		<SubcategoryBillChart data={billsData} />
+	</BillModal>
+{/if}

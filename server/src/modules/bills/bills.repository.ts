@@ -8,10 +8,10 @@ export const billRepository = {
       },
     });
   },
-  update: async (id: number, data: any) => {
+  update: async (data: any) => {
     return await bill().update({
       where: {
-        id: id,
+        id: data.id,
       },
       data: data,
     });

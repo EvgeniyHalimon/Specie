@@ -39,9 +39,11 @@ router.post('/',  validate(createBillSchema, {}, {}), async (req: CustomRequest,
 
 router.put('/', async (req: CustomRequest, res: Response) => {
   try {
-    await billService.update(req.id, req.body);
+    console.log(req.id)
+    await billService.update(req.body);
     res.status(200).json({ 'success': 'Bill updated!' });
   } catch (error) {
+    console.log('🚀 ~ file: bills.controller.ts:45 ~ router.put ~ error:', error);
     res.status(error.status).json({ 'message': error.message });  
   }
 });

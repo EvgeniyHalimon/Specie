@@ -17,8 +17,8 @@ export const billService = {
     }
     return bills;
   },
-  update: async (id: number, data: any) => {
-    const updatedBill = await billRepository.update(id, data);
+  update: async (data: any) => {
+    const updatedBill = await billRepository.update(data);
     if(!updatedBill){
       throw new CustomError({ message: 'Something went wrong when you tried to update bill', status: 409 });
     }

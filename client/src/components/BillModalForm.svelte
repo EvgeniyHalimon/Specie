@@ -19,7 +19,6 @@
 				categoryID: categoryValue,
 				subcategoryID: subcategoryValue
 			});
-			console.log('🚀 ~ file: BillModalContent.svelte:22 ~ register ~ data:', data);
 			categoryValue = 1;
 			subcategoryValue = 1;
 			comment = '';

@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import axiosWorker from '$shared/axios';
 	import { LOGIN } from '$shared/constants';
 	import { saveTokens } from '$shared/tokensWorkshop';
 	import { tokens } from '$store/store';
-	import { onMount } from 'svelte';
 
 	let password = '';
 	let email = '';

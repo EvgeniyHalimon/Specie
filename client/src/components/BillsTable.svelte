@@ -1,15 +1,7 @@
 <script lang="ts">
+	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
-
-	const getCategory = (id: number) => {
-		const category = $categories.filter((c) => c.id == id);
-		return category[0].name;
-	};
-
-	const getSubcategory = (id: number) => {
-		const category = $subcategories.filter((c) => c.id == id);
-		return category[0].name;
-	};
+	import TableCell from './TableCell.svelte';
 </script>
 
 <table>
@@ -23,9 +15,11 @@
 	<tbody>
 		{#each $bills as bill}
 			<tr>
-				<td class="hover:bg-slate-300">{getCategory(bill.categoryID)}</td>
-				<td class="border-x-[#c0c0c0] border-r border-l">{getSubcategory(bill.subcategoryID)}</td>
-				<td>{bill.price}</td>
+				<td class="hover:bg-slate-300">{getName(bill.categoryID, $categories)}</td>
+				<td class="border-x-[#c0c0c0] border-r border-l hover:bg-slate-300"
+					>{getName(bill.subcategoryID, $subcategories)}</td
+				>
+				<TableCell columnData={bill} />
 			</tr>
 		{/each}
 	</tbody>
@@ -48,7 +42,7 @@
 
 	th,
 	td {
-		padding: 15px;
+		padding: 16px;
 		text-align: center;
 		color: rgba(0, 0, 0, 0.822);
 	}

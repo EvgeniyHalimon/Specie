@@ -38,7 +38,7 @@ model Subcategory {
 
 model Bill {
   id Int @id @default(autoincrement())
-  price Decimal
+  price Decimal @db.Decimal(65, 2)
   comment String
   createdAt  DateTime   @default(now())
   categoryID Int

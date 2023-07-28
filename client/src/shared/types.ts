@@ -23,3 +23,15 @@ export interface ISubcategory {
 	name: string;
 	categoryID: number;
 }
+
+export interface IMergedBill {
+	category: string;
+	price: number;
+	categoryID: number;
+}
+
+export interface IMergedBySubcategory {
+	subcategory: string;
+	price: number;
+	subcategoryID: number;
+}
