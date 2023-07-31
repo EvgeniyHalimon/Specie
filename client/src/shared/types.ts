@@ -35,3 +35,10 @@ export interface IMergedBySubcategory {
 	price: number;
 	subcategoryID: number;
 }
+
+export interface IMergedByDay {
+	date: Date;
+	price: number;
+	categoryID: number;
+	createdAt: string;
+}

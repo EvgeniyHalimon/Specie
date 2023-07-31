@@ -4,16 +4,56 @@
 	import BillsChart from '$components/BillsChart.svelte';
 	import BillsTable from '$components/BillsTable.svelte';
 	import LoadCoin from '$components/LoadCoin.svelte';
+	import MonthlyBillChart from '$components/MonthlyBillChart.svelte';
+	import WeeklyBillsChart from '$components/WeeklyBillsChart.svelte';
 	import axiosWorker from '$shared/axios';
 	import { GET_BILLS, GET_CATEGORIES, GET_SUBCATEGORIES } from '$shared/constants';
-	import type { IBill, IMergedBill } from '$shared/types';
+	import type { IBill, IMergedBill, IMergedByDay } from '$shared/types';
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
 	import { onMount } from 'svelte';
 	let open: boolean = false;
 	let isLoaded: boolean = false;
 	let mergedBills: IMergedBill[];
+	let billsByWeek: any
 	const openBillModal = () => (open = !open);
+
+	const mergeByCategory = (arr: IMergedBill[]) => {
+		return arr.reduce((result: IMergedBill[], current: IMergedBill) => {
+			const existingItem = result.find((item: IMergedBill) => item.category === current.category);
+			if (existingItem) {
+				let b = Number(existingItem.price)
+				b += Number(current.price);
+			} else {
+				result.push({
+					category: current.category,
+					price: Number(current.price),
+					categoryID: current.categoryID
+				});
+			}
+			return result;
+		}, []);
+	};
+
+	const mergeByDay = (arr: IBill[]) => {
+		return arr.reduce((result: IMergedByDay[], current: any) => {
+			const existingItem = result.find(
+				(item: any) => new Date(item.createdAt).getDate() === new Date(current.createdAt).getDate()
+			);
+
+			if (existingItem) {
+				existingItem.price += current.price;
+			} else {
+				result.push({
+					date:  new Date(current.createdAt),
+					price: current.price,
+					categoryID: current.categoryID,
+					createdAt: current.createdAt
+				});
+			}
+			return result;
+		}, []);
+	};
 
 	const getData = async () => {
 		try {
@@ -25,15 +65,16 @@
 			if (data) {
 				const sorted = billData.sort((a: IBill, b: IBill) =>
 					a.createdAt.localeCompare(b.createdAt)
-				);
+				).map((item: IBill) => { return {...item, price: Number(item.price)}} )
 				bills.set(sorted);
-				mergedBills = $bills.map((bill) => {
+				mergedBills = sorted.map((bill: any) => {
 					return {
 						category: getName(bill.categoryID, $categories),
-						price: Number(bill.price), //da hell?!
+						price: bill.price, 
 						categoryID: bill.categoryID
 					};
 				});
+				billsByWeek = mergeByDay(sorted)
 			}
 			isLoaded = true;
 		} catch (error) {
@@ -41,24 +82,9 @@
 		}
 	};
 
-	const mergeByCategory = (arr: IMergedBill[]) => {
-		return arr.reduce((result: IMergedBill[], current: IMergedBill) => {
-			const existingItem = result.find((item: IMergedBill) => item.category === current.category);
-			if (existingItem) {
-				existingItem.price += current.price;
-			} else {
-				result.push({
-					category: current.category,
-					price: current.price,
-					categoryID: current.categoryID
-				});
-			}
-			return result;
-		}, []);
-	};
-
 	onMount(() => {
 		getData();
+		console.log(new Date('2023-07-27T16:55:37.146Z'), 'njciwjeijiejdiwejdiwjeidjiewj')
 	});
 </script>
 
@@ -84,6 +110,10 @@
 				{/if}
 			</div>
 		</div>
+	</div>
+	<div class="flex justify-between w-full gap-10">
+		<WeeklyBillsChart />
+		<MonthlyBillChart />
 	</div>
 {:else}
 	<LoadCoin />

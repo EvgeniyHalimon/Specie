@@ -24,8 +24,8 @@
 			if (data) {
 				saveTokens(data);
 				tokens.set(data);
-				goto('/dashboard');
 			}
+			goto('/dashboard');
 		} catch (err: any) {
 			console.log('🚀 ~ file: +page.svelte:24 ~ login ~ err:', err);
 		}

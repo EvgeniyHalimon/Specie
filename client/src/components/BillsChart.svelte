@@ -34,7 +34,6 @@
 	// @ts-ignore
 	let yVals = data.map((el) => Number(el[y]));
 	let catIds = data.map((el) => el[ids]);
-	console.log('🚀 ~ file: BillsChart.svelte:34 ~ catIds:', catIds);
 	if (percent) {
 		const total = yVals.reduce((a, b) => a + b, 0);
 		yVals = yVals.map((el) => el / total);
@@ -87,8 +86,11 @@
 			stroke-width={strokeWidth}
 			stroke-linejoin={strokeLinejoin}
 			on:click={() => openSubcategoryModal(catIds[i])}
+			class="cursor-pointer"
 		/>
-		<g text-anchor="middle" transform="translate({arcLabel.centroid(wedge)})">
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<g text-anchor="middle" transform="translate({arcLabel.centroid(wedge)})" class="cursor-pointer" on:click={() => openSubcategoryModal(catIds[i])}>
 			<text font-size={fontSize}>
 				<tspan font-weight="bold">{xVals[i]}</tspan>
 				<tspan x="0" dy="1.1em"
