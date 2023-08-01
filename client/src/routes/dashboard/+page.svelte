@@ -15,14 +15,14 @@
 	let open: boolean = false;
 	let isLoaded: boolean = false;
 	let mergedBills: IMergedBill[];
-	let billsByWeek: any
+	let billsByWeek: any;
 	const openBillModal = () => (open = !open);
 
 	const mergeByCategory = (arr: IMergedBill[]) => {
 		return arr.reduce((result: IMergedBill[], current: IMergedBill) => {
 			const existingItem = result.find((item: IMergedBill) => item.category === current.category);
 			if (existingItem) {
-				let b = Number(existingItem.price)
+				let b = Number(existingItem.price);
 				b += Number(current.price);
 			} else {
 				result.push({
@@ -45,7 +45,7 @@
 				existingItem.price += current.price;
 			} else {
 				result.push({
-					date:  new Date(current.createdAt),
+					date: new Date(current.createdAt).getDate(),
 					price: current.price,
 					categoryID: current.categoryID,
 					createdAt: current.createdAt
@@ -63,18 +63,20 @@
 			if (data) subcategories.set(data);
 			const { data: billData } = await axiosWorker().get(GET_BILLS);
 			if (data) {
-				const sorted = billData.sort((a: IBill, b: IBill) =>
-					a.createdAt.localeCompare(b.createdAt)
-				).map((item: IBill) => { return {...item, price: Number(item.price)}} )
+				const sorted = billData
+					.sort((a: IBill, b: IBill) => a.createdAt.localeCompare(b.createdAt))
+					.map((item: IBill) => {
+						return { ...item, price: Number(item.price) };
+					});
 				bills.set(sorted);
 				mergedBills = sorted.map((bill: any) => {
 					return {
 						category: getName(bill.categoryID, $categories),
-						price: bill.price, 
+						price: bill.price,
 						categoryID: bill.categoryID
 					};
 				});
-				billsByWeek = mergeByDay(sorted)
+				billsByWeek = mergeByDay(sorted);
 			}
 			isLoaded = true;
 		} catch (error) {
@@ -84,7 +86,6 @@
 
 	onMount(() => {
 		getData();
-		console.log(new Date('2023-07-27T16:55:37.146Z'), 'njciwjeijiejdiwejdiwjeidjiewj')
 	});
 </script>
 
@@ -112,7 +113,7 @@
 		</div>
 	</div>
 	<div class="flex justify-between w-full gap-10">
-		<WeeklyBillsChart />
+		<WeeklyBillsChart {billsByWeek} />
 		<MonthlyBillChart />
 	</div>
 {:else}

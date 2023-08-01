@@ -90,7 +90,12 @@
 		/>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<g text-anchor="middle" transform="translate({arcLabel.centroid(wedge)})" class="cursor-pointer" on:click={() => openSubcategoryModal(catIds[i])}>
+		<g
+			text-anchor="middle"
+			transform="translate({arcLabel.centroid(wedge)})"
+			class="cursor-pointer"
+			on:click={() => openSubcategoryModal(catIds[i])}
+		>
 			<text font-size={fontSize}>
 				<tspan font-weight="bold">{xVals[i]}</tspan>
 				<tspan x="0" dy="1.1em"
