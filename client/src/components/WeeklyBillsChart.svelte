@@ -18,12 +18,12 @@
 
 	export let billsByWeek: any;
 
-	let billsData = billsByWeek.filter((item: IMergedByDay) => item.month === currentMonth);
+	/* let billsByWeek = billsByWeek.filter((item: IMergedByDay) => item.month === currentMonth); */
 
 	let data = [
 		{
 			id: 'This month',
-			data: billsData
+			data: billsByWeek
 		}
 	];
 
@@ -74,7 +74,7 @@
 
 	const daysTicks = Array.from({ length: currentMonthDays }, (_: undefined, i: number) => i + 1);
 
-	if (!billsData) {
+	if (billsByWeek.length) {
 		// For a single set of data
 		if (!('data' in data[0])) {
 			x = Object.keys(data[0])[0];
@@ -144,7 +144,7 @@
 
 <div>
 	<h1>Month chart</h1>
-	{#if billsData.length === 0}
+	{#if billsByWeek.length === 0}
 		<div class={`flex justify-center items-center h-[${height}px] w-[${width}px]`}>
 			<h2>No data for this month</h2>
 		</div>

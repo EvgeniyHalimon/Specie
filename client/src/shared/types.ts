@@ -43,3 +43,8 @@ export interface IMergedByDay {
 	categoryID: number;
 	createdAt: string;
 }
+
+export interface IMergedByMonth {
+	month: number;
+	amount: number;
+}

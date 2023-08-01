@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { currentMonth } from '$shared/date';
+	import type { IBill } from '$shared/types';
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
 	import TableCell from './TableCell.svelte';
+	let billsByCurrentMonth = $bills.filter((item: IBill) => new Date(item.createdAt).getMonth() === currentMonth)
 </script>
 
 <table>
@@ -13,7 +16,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each $bills as bill}
+		{#each billsByCurrentMonth as bill}
 			<tr>
 				<td class="hover:bg-slate-300">{getName(bill.categoryID, $categories)}</td>
 				<td class="border-x-[#c0c0c0] border-r border-l hover:bg-slate-300"

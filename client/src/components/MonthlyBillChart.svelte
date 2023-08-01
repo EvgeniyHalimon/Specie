@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { scaleLinear, scaleBand } from 'd3';
 	import { flip } from 'svelte/animate';
-	let data = [
-		{ letter: 28, frequency: 0.08167 },
-		{ letter: 29, frequency: 0.01492 },
-		{ letter: 30, frequency: 0.02782 },
-		{ letter: 31, frequency: 0.04253 }
-	];
+	export let data: any 
 	const marginTop = 20; // top margin, in pixels
 	const marginRight = 0; // right margin, in pixels
 	const marginBottom = 30; // bottom margin, in pixels
@@ -14,8 +9,8 @@
 	const width = 600; // width of the chart, in pixels
 	const height = 300; // height of the chart, in pixels
 	const xPadding = 0.2; // padding between bars
-	const yFormat = '%'; // unit to display on y-axis ticks
-	const yLabel = '↑ Cost'; // label for the y-axis
+	const yFormat = '₴'; // unit to display on y-axis ticks
+	const yLabel = '↑ Amount'; // label for the y-axis
 	const color = 'steelblue'; // bar fill color
 	const yScalefactor = 6; // number of ticks on y-yaxis
 
@@ -84,11 +79,7 @@
 				<g class="tick" opacity="1" transform="translate(0, {reactiveYScale(tick)})">
 					<line class="tick-start" stroke="black" stroke-opacity="1" x2="-6" />
 					<line class="tick-grid" x2={width - marginLeft - marginRight} />
-					<text x={-marginLeft} y="10"
-						>{yFormat === '%'
-							? Number(reactiveYTicksFormatted[i]) * 100 + yFormat
-							: reactiveYTicksFormatted[i] + yFormat}</text
-					>
+					<text x={-marginLeft} y="10">{Number(reactiveYTicksFormatted[i]) + yFormat}</text>
 				</g>
 			{/each}
 			<text x="-{marginLeft}" y={marginTop}>{yLabel}</text>

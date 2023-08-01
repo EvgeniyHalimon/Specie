@@ -8,7 +8,8 @@
 	import WeeklyBillsChart from '$components/WeeklyBillsChart.svelte';
 	import axiosWorker from '$shared/axios';
 	import { GET_BILLS, GET_CATEGORIES, GET_SUBCATEGORIES } from '$shared/constants';
-	import type { IBill, IMergedBill, IMergedByDay } from '$shared/types';
+	import { currentMonth } from '$shared/date';
+	import type { IBill, IMergedBill, IMergedByDay, IMergedByMonth } from '$shared/types';
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
 	import { onMount } from 'svelte';
@@ -16,10 +17,11 @@
 	let isLoaded: boolean = false;
 	let mergedBills: IMergedBill[];
 	let billsByWeek: any;
+	let billsByMonth: any;
 	const openBillModal = () => (open = !open);
 
 	const mergeByCategory = (arr: IMergedBill[]) => {
-		return arr.reduce((result: IMergedBill[], current: IMergedBill) => {
+		return arr.filter((item: any) => new Date(item.createdAt).getMonth() === currentMonth).reduce((result: IMergedBill[], current: IMergedBill) => {
 			const existingItem = result.find((item: IMergedBill) => item.category === current.category);
 			if (existingItem) {
 				let b = Number(existingItem.price);
@@ -36,9 +38,11 @@
 	};
 
 	const mergeByDay = (arr: IBill[]) => {
-		return arr.reduce((result: IMergedByDay[], current: any) => {
+		return arr.filter((item: any) => new Date(item.createdAt).getMonth() === currentMonth)
+		.reduce((result: IMergedByDay[], current: IBill) => {
 			const existingItem = result.find(
-				(item: any) => new Date(item.createdAt).getDate() === new Date(current.createdAt).getDate()
+				(item: IMergedByDay) =>
+					new Date(item.createdAt).getDate() === new Date(current.createdAt).getDate()
 			);
 
 			if (existingItem) {
@@ -50,6 +54,24 @@
 					month: new Date(current.createdAt).getMonth(),
 					categoryID: current.categoryID,
 					createdAt: current.createdAt
+				});
+			}
+			return result;
+		}, []);
+	};
+
+	const mergedByMonth = (arr: IBill[]) => {
+		return arr.reduce((result: any, current: any) => {
+			const existingItem = result.find((item: any) => {
+				return item.month === new Date(current.createdAt).getMonth()
+			});
+
+			if (existingItem) {
+				existingItem.amount += current.price;
+			} else {
+				result.push({
+					month: new Date(current.createdAt).getMonth(),
+					amount: current.price
 				});
 			}
 			return result;
@@ -74,10 +96,12 @@
 					return {
 						category: getName(bill.categoryID, $categories),
 						price: bill.price,
-						categoryID: bill.categoryID
+						categoryID: bill.categoryID,
+						createdAt: bill.createdAt
 					};
 				});
 				billsByWeek = mergeByDay(sorted);
+				billsByMonth = mergedByMonth(sorted)
 			}
 			isLoaded = true;
 		} catch (error) {
@@ -115,7 +139,7 @@
 	</div>
 	<div class="flex justify-between w-full gap-10">
 		<WeeklyBillsChart {billsByWeek} />
-		<MonthlyBillChart />
+		<MonthlyBillChart data={billsByMonth}/>
 	</div>
 {:else}
 	<LoadCoin />
