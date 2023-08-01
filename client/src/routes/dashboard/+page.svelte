@@ -47,6 +47,7 @@
 				result.push({
 					date: new Date(current.createdAt).getDate(),
 					price: current.price,
+					month: new Date(current.createdAt).getMonth(),
 					categoryID: current.categoryID,
 					createdAt: current.createdAt
 				});

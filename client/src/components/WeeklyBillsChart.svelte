@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { currentMonthDays, currentMonth } from '$shared/date';
+	import type { IMergedByDay } from '$shared/types';
 	import { line, curveLinear, Delaunay, range, scaleLinear, scaleUtc } from 'd3';
 
 	const csvWest = `Year,Population
@@ -16,24 +18,12 @@
 
 	export let billsByWeek: any;
 
-	function csvConvert(csv: any) {
-		return csv
-			.split('\n')
-			.slice(1)
-			.map((str: any) => {
-				const [date, population] = str
-					.split(',')
-					.map((el: any) => (el > 1900 ? new Date(el, 0) : parseFloat(el)));
-				return { date, population };
-			});
-	}
-
-	const west = csvConvert(csvWest);
+	let billsData = billsByWeek.filter((item: IMergedByDay) => item.month === currentMonth);
 
 	let data = [
 		{
 			id: 'This month',
-			data: billsByWeek
+			data: billsData
 		}
 	];
 
@@ -82,36 +72,40 @@
 	let subsets: any = [];
 	let colorVals: any = [];
 
-	// For a single set of data
-	if (!('data' in data[0])) {
-		x = Object.keys(data[0])[0];
-		y = Object.keys(data[0])[1];
-		xVals = data.map((el: any) => el[x]);
-		yVals = data.map((el: any) => el[y]);
-		colorVals = data.map((el) => 0);
-		points = data.map((el: any) => ({
-			x: el[x],
-			y: el[y],
-			color: 0
-		}));
-	}
-	// For data with subsets (NOTE: expects 'id' and 'data' keys)
-	else {
-		x = Object.keys(data[0]?.data[0])[0];
-		y = Object.keys(data[0]?.data[0])[1];
-		data.forEach((subset, i) => {
-			subset.data.forEach((coordinate: any) => {
-				xVals.push(coordinate[x]);
-				yVals.push(coordinate[y]);
-				colorVals.push(i);
-				points.push({
-					x: coordinate[x],
-					y: coordinate[y],
-					color: i
+	const daysTicks = Array.from({ length: currentMonthDays }, (_: undefined, i: number) => i + 1);
+
+	if (!billsData) {
+		// For a single set of data
+		if (!('data' in data[0])) {
+			x = Object.keys(data[0])[0];
+			y = Object.keys(data[0])[1];
+			xVals = data.map((el: any) => el[x]);
+			yVals = data.map((el: any) => el[y]);
+			colorVals = data.map((el) => 0);
+			points = data.map((el: any) => ({
+				x: el[x],
+				y: el[y],
+				color: 0
+			}));
+		}
+		// For data with subsets (NOTE: expects 'id' and 'data' keys)
+		else {
+			x = Object.keys(data[0]?.data[0])[0];
+			y = Object.keys(data[0]?.data[0])[1];
+			data.forEach((subset, i) => {
+				subset.data.forEach((coordinate: any) => {
+					xVals.push(coordinate[x]);
+					yVals.push(coordinate[y]);
+					colorVals.push(i);
+					points.push({
+						x: coordinate[x],
+						y: coordinate[y],
+						color: i
+					});
 				});
+				subsets.push(subset.id);
 			});
-			subsets.push(subset.id);
-		});
+		}
 	}
 
 	const I = range(xVals.length);
@@ -141,123 +135,131 @@
 	}
 
 	const pointsScaled = points.map((el: any) => [xScale(el.x), yScale(el.y), el.color]);
-	console.log('🚀 ~ file: WeeklyBillsChart.svelte:144 ~ pointsScaled:', pointsScaled);
 	const delaunayGrid = Delaunay.from(pointsScaled);
 	const voronoiGrid = delaunayGrid.voronoi([0, 0, width, height]);
 
-	const xTicks = xScale.ticks(xScalefactor);
+	const xTicks = daysTicks; /* xScale.ticks(xScalefactor); */
 	const yTicks = niceY.ticks(yScalefactor);
 </script>
 
-<div class="chart-container">
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<svg
-		{width}
-		{height}
-		viewBox="0 0 {width} {height}"
-		cursor="crosshair"
-		on:mouseout={() => (dotInfo = null)}
-		on:blur={() => (dotInfo = null)}
-	>
-		<!-- Dots (if enabled) -->
-		{#if showDots && !dotInfo}
-			{#each I as i}
-				<g class="dot" pointer-events="none">
-					<circle
-						cx={xScale(xVals[i])}
-						cy={yScale(yVals[i])}
-						{r}
-						stroke={colors[colorVals[i]]}
-						fill={dotsFilled ? colors[colorVals[i]] : 'none'}
-					/>
-				</g>
-			{/each}
-		{/if}
-		<!-- Chart lines -->
-		{#each lines as subsetLine, i}
-			<g class="chartlines" pointer-events="none">
-				{#if dotInfo}
-					<path
-						class="line"
-						fill="none"
-						stroke-opacity={points[dotInfo[1]].color === i ? '1' : '0.1'}
-						stroke={colors[i]}
-						d={subsetLine}
-						stroke-width={strokeWidth}
-						stroke-linecap={strokeLinecap}
-						stroke-linejoin={strokeLinejoin}
-					/>
-					<circle
-						cx={xScale(points[dotInfo[1]].x)}
-						cy={yScale(points[dotInfo[1]].y)}
-						{r}
-						stroke={colors[points[dotInfo[1]].color]}
-						fill={dotsFilled ? colors[colorVals[i]] : 'none'}
-					/>
-				{:else}
-					<path
-						class="line"
-						fill="none"
-						stroke={colors[i]}
-						d={subsetLine}
-						stroke-opacity={strokeOpacity}
-						stroke-width={strokeWidth}
-						stroke-linecap={strokeLinecap}
-						stroke-linejoin={strokeLinejoin}
-					/>
-				{/if}
-			</g>
-		{/each}
-
-		<!-- Y-axis and horizontal grid lines -->
-		<g class="y-axis" transform="translate({marginLeft}, 0)" pointer-events="none">
-			<path
-				class="domain"
-				stroke="black"
-				d="M{insetLeft}, {marginTop} V{height - marginBottom + 6}"
-			/>
-			{#each yTicks as tick, i}
-				<g class="tick" transform="translate(0, {yScale(tick)})">
-					<line class="tick-start" x1={insetLeft - 6} x2={insetLeft} />
-					{#if horizontalGrid}
-						<line class="tick-grid" x1={insetLeft} x2={width - marginLeft - marginRight} />
-					{/if}
-					<text x="-{marginLeft}" y="5">{tick + yFormat}</text>
-				</g>
-			{/each}
-			<text x="-{marginLeft}" y={marginTop - 25}>{yLabel}</text>
-		</g>
-		<!-- X-axis and vertical grid lines -->
-		<g
-			class="x-axis"
-			transform="translate(0,{height - marginBottom - insetBottom})"
-			pointer-events="none"
-		>
-			<path class="domain" stroke="black" d="M{marginLeft},0.5 H{width - marginRight}" />
-			{#each xTicks as tick, i}
-				<g class="tick" transform="translate({xScale(tick)}, 0)">
-					<line class="tick-start" stroke="black" y2="6" />
-					{#if verticalGrid}
-						<line class="tick-grid" y2={-height + 70} />
-					{/if}
-					<text font-size="14px" x={-marginLeft / 4} y="20">{xTicks[i] + xFormat}</text>
-				</g>
-			{/each}
-			<text x={width - marginLeft - marginRight - 40} y={marginBottom}>{xLabel}</text>
-		</g>
-
-		{#each pointsScaled as point, i}
+<div>
+	<h1>Month chart</h1>
+	{#if billsData.length === 0}
+		<div class={`flex justify-center items-center h-[${height}px] w-[${width}px]`}>
+			<h2>No data for this month</h2>
+		</div>
+	{:else}
+		<div class="chart-container">
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
-			<path
-				stroke="none"
-				fill-opacity="0"
-				class="voronoi-cell"
-				d={voronoiGrid.renderCell(i)}
-				on:mouseover={(e) => (dotInfo = [point, i, e])}
-				on:focus={(e) => (dotInfo = [point, i, e])}
-			/>
-		{/each}
-	</svg>
+			<svg
+				{width}
+				{height}
+				viewBox="0 0 {width} {height}"
+				cursor="crosshair"
+				on:mouseout={() => (dotInfo = null)}
+				on:blur={() => (dotInfo = null)}
+			>
+				<!-- Dots (if enabled) -->
+				{#if showDots && !dotInfo}
+					{#each I as i}
+						<g class="dot" pointer-events="none">
+							<circle
+								cx={xScale(xVals[i])}
+								cy={yScale(yVals[i])}
+								{r}
+								stroke={colors[colorVals[i]]}
+								fill={dotsFilled ? colors[colorVals[i]] : 'none'}
+							/>
+						</g>
+					{/each}
+				{/if}
+				<!-- Chart lines -->
+				{#each lines as subsetLine, i}
+					<g class="chartlines" pointer-events="none">
+						{#if dotInfo}
+							<path
+								class="line"
+								fill="none"
+								stroke-opacity={points[dotInfo[1]].color === i ? '1' : '0.1'}
+								stroke={colors[i]}
+								d={subsetLine}
+								stroke-width={strokeWidth}
+								stroke-linecap={strokeLinecap}
+								stroke-linejoin={strokeLinejoin}
+							/>
+							<circle
+								cx={xScale(points[dotInfo[1]].x)}
+								cy={yScale(points[dotInfo[1]].y)}
+								{r}
+								stroke={colors[points[dotInfo[1]].color]}
+								fill={dotsFilled ? colors[colorVals[i]] : 'none'}
+							/>
+						{:else}
+							<path
+								class="line"
+								fill="none"
+								stroke={colors[i]}
+								d={subsetLine}
+								stroke-opacity={strokeOpacity}
+								stroke-width={strokeWidth}
+								stroke-linecap={strokeLinecap}
+								stroke-linejoin={strokeLinejoin}
+							/>
+						{/if}
+					</g>
+				{/each}
+
+				<!-- Y-axis and horizontal grid lines -->
+				<g class="y-axis" transform="translate({marginLeft}, 0)" pointer-events="none">
+					<path
+						class="domain"
+						stroke="black"
+						d="M{insetLeft}, {marginTop} V{height - marginBottom + 6}"
+					/>
+					{#each yTicks as tick, i}
+						<g class="tick" transform="translate(0, {yScale(tick)})">
+							<line class="tick-start" x1={insetLeft - 6} x2={insetLeft} />
+							{#if horizontalGrid}
+								<line class="tick-grid" x1={insetLeft} x2={width - marginLeft - marginRight} />
+							{/if}
+							<text x="-{marginLeft}" y="5">{tick + yFormat}</text>
+						</g>
+					{/each}
+					<text x="-{marginLeft}" y={marginTop - 25}>{yLabel}</text>
+				</g>
+				<!-- X-axis and vertical grid lines -->
+				<g
+					class="x-axis"
+					transform="translate(0,{height - marginBottom - insetBottom})"
+					pointer-events="none"
+				>
+					<path class="domain" stroke="black" d="M{marginLeft},0.5 H{width - marginRight}" />
+					{#each xTicks as tick, i}
+						<g class="tick" transform="translate({xScale(tick)}, 0)">
+							<line class="tick-start" stroke="black" y2="6" />
+							{#if verticalGrid}
+								<line class="tick-grid" y2={-height + 70} />
+							{/if}
+							<text font-size="14px" x={-marginLeft / 4} y="20">{xTicks[i] + xFormat}</text>
+						</g>
+					{/each}
+					<text x={width - marginLeft - marginRight - 40} y={marginBottom}>{xLabel}</text>
+				</g>
+
+				{#each pointsScaled as point, i}
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<path
+						stroke="none"
+						fill-opacity="0"
+						class="voronoi-cell"
+						d={voronoiGrid.renderCell(i)}
+						on:mouseover={(e) => (dotInfo = [point, i, e])}
+						on:focus={(e) => (dotInfo = [point, i, e])}
+					/>
+				{/each}
+			</svg>
+		</div>
+	{/if}
 </div>
 <!-- Tooltip -->
 {#if dotInfo}
