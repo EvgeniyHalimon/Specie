@@ -4,8 +4,8 @@
 	import BillsChart from '$components/BillsChart.svelte';
 	import BillsTable from '$components/BillsTable.svelte';
 	import LoadCoin from '$components/LoadCoin.svelte';
-	import MonthlyBillChart from '$components/MonthlyBillChart.svelte';
-	import WeeklyBillsChart from '$components/WeeklyBillsChart.svelte';
+	import AnnualBillChart from '$components/AnnualBillsChart.svelte';
+	import MonthlyBillsChart from '$components/MonthlyBillsChart.svelte';
 	import axiosWorker from '$shared/axios';
 	import { GET_BILLS, GET_CATEGORIES, GET_SUBCATEGORIES } from '$shared/constants';
 	import { currentMonth } from '$shared/date';
@@ -81,8 +81,8 @@
 		</div>
 	</div>
 	<div class="flex justify-between w-full gap-10">
-		<WeeklyBillsChart {billsByWeek} />
-		<MonthlyBillChart data={billsByMonth} />
+		<MonthlyBillsChart {billsByWeek} />
+		<AnnualBillChart data={billsByMonth} />
 	</div>
 {:else}
 	<LoadCoin />

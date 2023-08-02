@@ -1,12 +1,19 @@
 <script lang="ts">
+	import { BillModal as Modal } from '$components';
 	import { currentMonth } from '$shared/date';
 	import type { IBill } from '$shared/types';
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
 	import TableCell from './TableCell.svelte';
+	import TableModalContent from './TableModalContent.svelte';
+	let open = Array($bills.length).fill(false);
 	let billsByCurrentMonth = $bills.filter(
 		(item: IBill) => new Date(item.createdAt).getMonth() === currentMonth
 	);
+
+	const openTableModal = (index: number) => {
+		open[index] = !open[index];
+	};
 </script>
 
 <table>
@@ -18,13 +25,18 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each billsByCurrentMonth as bill}
-			<tr>
+		{#each billsByCurrentMonth as bill, index}
+			<tr on:click={() => openTableModal(index)}>
 				<td class="hover:bg-slate-300">{getName(bill.categoryID, $categories)}</td>
-				<td class="border-x-[#c0c0c0] border-r border-l hover:bg-slate-300"
-					>{getName(bill.subcategoryID, $subcategories)}</td
-				>
+				<td class="border-x-[#c0c0c0] border-r border-l hover:bg-slate-300">
+					{getName(bill.subcategoryID, $subcategories)}
+				</td>
 				<TableCell columnData={bill} />
+				{#if open[index]}
+					<Modal bind:open={open[index]}>
+						<TableModalContent {bill} />
+					</Modal>
+				{/if}
 			</tr>
 		{/each}
 	</tbody>
