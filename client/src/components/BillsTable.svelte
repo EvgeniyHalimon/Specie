@@ -4,7 +4,9 @@
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
 	import TableCell from './TableCell.svelte';
-	let billsByCurrentMonth = $bills.filter((item: IBill) => new Date(item.createdAt).getMonth() === currentMonth)
+	let billsByCurrentMonth = $bills.filter(
+		(item: IBill) => new Date(item.createdAt).getMonth() === currentMonth
+	);
 </script>
 
 <table>

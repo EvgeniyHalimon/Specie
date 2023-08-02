@@ -1,7 +1,7 @@
-const dateInstantse = new Date();
+const dateInstance = new Date();
 
-const currentYear = dateInstantse.getFullYear();
-const currentMonth = dateInstantse.getMonth();
+const currentYear = dateInstance.getFullYear();
+const currentMonth = dateInstance.getMonth();
 
 const getDaysInMonth = (year: number, month: number) => {
 	return new Date(year, month, 0).getDate();
@@ -9,4 +9,22 @@ const getDaysInMonth = (year: number, month: number) => {
 
 const currentMonthDays = getDaysInMonth(currentYear, currentMonth);
 
-export { getDaysInMonth, currentMonthDays, currentMonth, currentYear };
+const getMonthName = (month: number) => {
+	const monthes = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+	return monthes[month];
+};
+
+export { getDaysInMonth, currentMonthDays, currentMonth, currentYear, getMonthName };

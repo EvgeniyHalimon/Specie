@@ -1,28 +1,20 @@
 <script lang="ts">
-	import { currentMonthDays, currentMonth } from '$shared/date';
+	import { currentMonthDays, currentMonth, getMonthName } from '$shared/date';
 	import type { IMergedByDay } from '$shared/types';
 	import { line, curveLinear, Delaunay, range, scaleLinear, scaleUtc } from 'd3';
 
-	const csvWest = `Year,Population
-1920,9.213920
-1930,12.323836
-1940,14.379119
-1950,20.189962
-1960,28.053104
-1970,34.804193
-1980,43.172490
-1990,52.786082
-2000,63.197932
-2010,71.945553
-2020,78.588572`;
-
-	export let billsByWeek: any;
+	export let billsByWeek: IMergedByDay[];
 
 	/* let billsByWeek = billsByWeek.filter((item: IMergedByDay) => item.month === currentMonth); */
 
-	let data = [
+	interface IChartData {
+		id: string;
+		data: IMergedByDay[];
+	}
+
+	let data: IChartData[] = [
 		{
-			id: 'This month',
+			id: getMonthName(currentMonth),
 			data: billsByWeek
 		}
 	];
@@ -62,8 +54,8 @@
 	const yType = scaleLinear; // type of y-scale
 	const yRange = [height - marginBottom - insetBottom, marginTop + insetTop]; // [bottom, top]
 
-	let x: any;
-	let y: any;
+	let x: string;
+	let y: string;
 	let dotInfo: any;
 	let lines: any;
 	let xVals: any = [];
@@ -92,7 +84,7 @@
 		else {
 			x = Object.keys(data[0]?.data[0])[0];
 			y = Object.keys(data[0]?.data[0])[1];
-			data.forEach((subset, i) => {
+			data.forEach((subset: IChartData, i: number) => {
 				subset.data.forEach((coordinate: any) => {
 					xVals.push(coordinate[x]);
 					yVals.push(coordinate[y]);
@@ -222,10 +214,10 @@
 							{#if horizontalGrid}
 								<line class="tick-grid" x1={insetLeft} x2={width - marginLeft - marginRight} />
 							{/if}
-							<text x="-{marginLeft}" y="5">{tick + yFormat}</text>
+							<text x="-{marginLeft}" y="7">{tick + yFormat}</text>
 						</g>
 					{/each}
-					<text x="-{marginLeft}" y={marginTop - 25}>{yLabel}</text>
+					<text x="-{marginLeft}" y={marginTop - 27}>{yLabel}</text>
 				</g>
 				<!-- X-axis and vertical grid lines -->
 				<g
@@ -268,8 +260,8 @@
 		style="position:absolute; left:{dotInfo[2].clientX + 12}px; top:{dotInfo[2].clientY +
 			12}px; pointer-events:none; background-color:{tooltipBackground}; color:{tooltipTextColor}"
 	>
-		{subsets ? subsets[points[dotInfo[1]].color] : ''}:
-		{points[dotInfo[1]].x}: {points[dotInfo[1]].y.toFixed(2)}{yFormat}
+		{points[dotInfo[1]].x}{' of '}{subsets ? subsets[points[dotInfo[1]].color] : ''}:
+		{'Spended '}: {points[dotInfo[1]].y.toFixed(2)}{yFormat}
 	</div>
 {/if}
 

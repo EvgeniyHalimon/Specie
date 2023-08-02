@@ -7,20 +7,17 @@
 	import './styles.css';
 	import './app.css';
 
-	let tokens: any;
-	console.log('🚀 ~ file: +layout.svelte:11 ~ tokens:', tokens);
-	let route: any;
+	let token: string | undefined;
+	let route: string | null;
 
 	onMount(() => {
-		tokens = getAccessToken();
-		console.log('🚀 ~ file: +layout.svelte:24 ~ onMount ~ tokens:', tokens);
+		token = getAccessToken();
 		route = $page.route.id;
 	});
 
 	afterNavigate((value) => {
-		console.log('🚀 ~ file: +layout.svelte:14 ~ afterNavigate ~ value:', value);
 		const isAuthRoute = /^\/auth\/.*/.test(String(value.to?.route.id));
-		if (!tokens && !isAuthRoute) {
+		if (!token && !isAuthRoute) {
 			goto('/auth/login', { noScroll: true, replaceState: true });
 		}
 	});
@@ -41,7 +38,7 @@
 			<h1 class="text-3xl">Specie</h1>
 			<Coin />
 		</div>
-		{#if tokens}
+		{#if token}
 			<button type="submit" on:click={submitLogout} class="btn btn-primary">Logout</button>
 		{:else}
 			<div class="flex gap-3">

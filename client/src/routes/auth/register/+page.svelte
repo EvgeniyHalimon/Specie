@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import axiosWorker from '$shared/axios';
 	import { REGISTER } from '$shared/constants';
-	import { saveTokens } from '$shared/tokensWorkshop';
-	import { onMount } from 'svelte';
 
 	let password = '';
 	let email = '';
@@ -22,7 +19,6 @@
 				lastname: lastname
 			});
 			message = data.message;
-			console.log('🚀 ~ file: +page.svelte:23 ~ register ~ data:', data);
 		} catch (err: any) {
 			console.log('🚀 ~ file: +page.svelte:24 ~ login ~ err:', err);
 		}

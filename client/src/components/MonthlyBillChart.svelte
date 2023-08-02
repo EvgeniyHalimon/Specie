@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { getMonthName } from '$shared/date';
+	import type { IMergedByMonth } from '$shared/types';
 	import { scaleLinear, scaleBand } from 'd3';
 	import { flip } from 'svelte/animate';
-	export let data: any 
+	export let data: IMergedByMonth[];
 	const marginTop = 20; // top margin, in pixels
 	const marginRight = 0; // right margin, in pixels
 	const marginBottom = 30; // bottom margin, in pixels
@@ -18,8 +20,8 @@
 	let sortedData = data;
 
 	// Compute values X and Y value of Arrays
-	const x = Object.keys(data[0])[0]; // given d in data, returns the (ordinal) x-value
-	const y = Object.keys(data[0])[1]; // given d in data, returns the (quantitative) y-value
+	const x: string = Object.keys(data[0])[0]; // given d in data, returns the (ordinal) x-value
+	const y: string = Object.keys(data[0])[1]; // given d in data, returns the (quantitative) y-value
 	$: reactiveShowSort = (input: any): any => {
 		if (input === 1) {
 			return (sortedData = data.sort((a: any, b: any) => a[x].charCodeAt(0) - b[x].charCodeAt(0)));
@@ -69,7 +71,7 @@
 						stroke="black"
 						y2="6"
 					/>
-					<text y={marginBottom} dx={reactiveXScale.bandwidth() / 4}>{xVal}</text>
+					<text y={marginBottom} dx={reactiveXScale.bandwidth() / 4}>{getMonthName(xVal)}</text>
 				</g>
 			{/each}
 		</g>

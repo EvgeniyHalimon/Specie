@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://localhost:4000';
+const apiUrl = import.meta.env.VITE_PUBLIC_API_URL;
+export const BASE_URL = apiUrl;
 
 const routes = {
 	auth: '/auth',

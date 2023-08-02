@@ -9,6 +9,7 @@
 	import axiosWorker from '$shared/axios';
 	import { GET_BILLS, GET_CATEGORIES, GET_SUBCATEGORIES } from '$shared/constants';
 	import { currentMonth } from '$shared/date';
+	import { mergeByCategory, mergeByDay, mergedByMonth } from '$shared/formatData';
 	import type { IBill, IMergedBill, IMergedByDay, IMergedByMonth } from '$shared/types';
 	import { getName } from '$shared/utils';
 	import { bills, categories, subcategories } from '$store/store';
@@ -16,67 +17,9 @@
 	let open: boolean = false;
 	let isLoaded: boolean = false;
 	let mergedBills: IMergedBill[];
-	let billsByWeek: any;
-	let billsByMonth: any;
+	let billsByWeek: IMergedByDay[];
+	let billsByMonth: IMergedByMonth[];
 	const openBillModal = () => (open = !open);
-
-	const mergeByCategory = (arr: IMergedBill[]) => {
-		return arr.filter((item: any) => new Date(item.createdAt).getMonth() === currentMonth).reduce((result: IMergedBill[], current: IMergedBill) => {
-			const existingItem = result.find((item: IMergedBill) => item.category === current.category);
-			if (existingItem) {
-				let b = Number(existingItem.price);
-				b += Number(current.price);
-			} else {
-				result.push({
-					category: current.category,
-					price: Number(current.price),
-					categoryID: current.categoryID
-				});
-			}
-			return result;
-		}, []);
-	};
-
-	const mergeByDay = (arr: IBill[]) => {
-		return arr.filter((item: any) => new Date(item.createdAt).getMonth() === currentMonth)
-		.reduce((result: IMergedByDay[], current: IBill) => {
-			const existingItem = result.find(
-				(item: IMergedByDay) =>
-					new Date(item.createdAt).getDate() === new Date(current.createdAt).getDate()
-			);
-
-			if (existingItem) {
-				existingItem.price += current.price;
-			} else {
-				result.push({
-					date: new Date(current.createdAt).getDate(),
-					price: current.price,
-					month: new Date(current.createdAt).getMonth(),
-					categoryID: current.categoryID,
-					createdAt: current.createdAt
-				});
-			}
-			return result;
-		}, []);
-	};
-
-	const mergedByMonth = (arr: IBill[]) => {
-		return arr.reduce((result: any, current: any) => {
-			const existingItem = result.find((item: any) => {
-				return item.month === new Date(current.createdAt).getMonth()
-			});
-
-			if (existingItem) {
-				existingItem.amount += current.price;
-			} else {
-				result.push({
-					month: new Date(current.createdAt).getMonth(),
-					amount: current.price
-				});
-			}
-			return result;
-		}, []);
-	};
 
 	const getData = async () => {
 		try {
@@ -85,14 +28,14 @@
 			const { data } = await axiosWorker().get(GET_SUBCATEGORIES);
 			if (data) subcategories.set(data);
 			const { data: billData } = await axiosWorker().get(GET_BILLS);
-			if (data) {
+			if (billData) {
 				const sorted = billData
 					.sort((a: IBill, b: IBill) => a.createdAt.localeCompare(b.createdAt))
 					.map((item: IBill) => {
 						return { ...item, price: Number(item.price) };
 					});
 				bills.set(sorted);
-				mergedBills = sorted.map((bill: any) => {
+				mergedBills = sorted.map((bill: IBill) => {
 					return {
 						category: getName(bill.categoryID, $categories),
 						price: bill.price,
@@ -100,8 +43,8 @@
 						createdAt: bill.createdAt
 					};
 				});
-				billsByWeek = mergeByDay(sorted);
-				billsByMonth = mergedByMonth(sorted)
+				billsByWeek = mergeByDay(sorted, currentMonth);
+				billsByMonth = mergedByMonth(sorted);
 			}
 			isLoaded = true;
 		} catch (error) {
@@ -117,7 +60,7 @@
 {#if isLoaded === true}
 	<div class="flex justify-between w-full gap-10">
 		{#if mergedBills.length !== 0}
-			<BillsChart data={mergeByCategory(mergedBills)} />
+			<BillsChart data={mergeByCategory(mergedBills, currentMonth)} />
 		{:else}
 			<h1>No data yet</h1>
 		{/if}
@@ -139,7 +82,7 @@
 	</div>
 	<div class="flex justify-between w-full gap-10">
 		<WeeklyBillsChart {billsByWeek} />
-		<MonthlyBillChart data={billsByMonth}/>
+		<MonthlyBillChart data={billsByMonth} />
 	</div>
 {:else}
 	<LoadCoin />

@@ -28,6 +28,7 @@ export interface IMergedBill {
 	category: string;
 	price: number;
 	categoryID: number;
+	createdAt: string;
 }
 
 export interface IMergedBySubcategory {
