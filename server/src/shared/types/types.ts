@@ -46,3 +46,11 @@ export interface IDecoded {
   iat: number,
   exp: number
 }
+
+export interface IQueries{
+  take: number,
+  skip: number,
+  search: string,
+  sortBy: string | any,
+  sort: 'asc' | 'desc',
+}

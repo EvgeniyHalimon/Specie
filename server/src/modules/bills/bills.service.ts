@@ -1,11 +1,22 @@
 import { CustomError } from '../../shared/CustomError';
+import { IQueries } from '../../shared/types/types';
 
 import { billRepository } from './bills.repository';
 
+const buildQueryObject = (query: IQueries): IQueries => {
+  return {
+    take: Number(query.take) || 5,
+    skip: Number(query.skip) || 0,
+    search: query.search.toString() || '',
+    sortBy: query.sortBy.toString() || '',
+    sort: query.sort || 'asc',
+  };
+};
+
 export const billService = {
-  deleteBill: async (id: number) => {
+  deleteBill: async (id: number, billIds: number[]) => {
     try {
-      return await billRepository.deleteBill(id);
+      return await billRepository.deleteBills(id, billIds);
     } catch (error) {
       throw new CustomError({ message: 'Something went wrong when you tried to delete bill', status: error.status });
     }
@@ -16,6 +27,13 @@ export const billService = {
       return [];
     }
     return bills;
+  },
+  get: async (id: number, queries: IQueries) => {
+    const accounts = await billRepository.getAllAndPaginate(id, buildQueryObject(queries));
+    if (!accounts){
+      throw new CustomError({ message: 'Accounts not found', status: 404 });
+    }
+    return accounts;
   },
   update: async (data: any) => {
     const updatedBill = await billRepository.update(data);

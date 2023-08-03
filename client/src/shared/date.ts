@@ -30,9 +30,7 @@ const getMonthName = (month: number) => {
 };
 
 const getDate = (date: string) => {
-	console.log('🚀 ~ file: date.ts:33 ~ getDate ~ date:', date);
 	const day = d(date).getDate();
-	console.log('🚀 ~ file: date.ts:35 ~ getDate ~ day:', day);
 	const month = d(date).getMonth() + 1;
 	const year = d(date).getFullYear();
 	return `${day > 9 ? day : `0${day}`}.${month > 9 ? month : `0${month}`}.${year}`;
