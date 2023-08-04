@@ -20,15 +20,6 @@ router.delete('/', async (req: CustomRequest, res: Response) => {
 
 router.get('/', async (req: CustomRequest, res: Response) => {
   try {
-    const bills = await billService.getAllUserBills(req.id);
-    res.status(200).json(bills);
-  } catch (error) {
-    res.json({ code: `${error.status}`, 'message': error.message });
-  }
-});
-
-router.get('/paginate', async (req: CustomRequest, res: Response) => {
-  try {
     const queries: IQueries = req.query as unknown as IQueries;
     const bills = await billService.get(req.id, queries);
     res.status(200).json(bills);

@@ -53,4 +53,6 @@ export interface IQueries{
   search: string,
   sortBy: string | any,
   sort: 'asc' | 'desc',
+  gteDate: string,
+  lteDate: string,
 }

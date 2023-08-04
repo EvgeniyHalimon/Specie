@@ -10,6 +10,8 @@ const buildQueryObject = (query: IQueries): IQueries => {
     search: query.search.toString() || '',
     sortBy: query.sortBy.toString() || '',
     sort: query.sort || 'asc',
+    gteDate: query.gteDate,
+    lteDate: query.lteDate,
   };
 };
 
@@ -20,13 +22,6 @@ export const billService = {
     } catch (error) {
       throw new CustomError({ message: 'Something went wrong when you tried to delete bill', status: error.status });
     }
-  },
-  getAllUserBills: async (id: number) =>{
-    const bills = await billRepository.getAll(id);
-    if(!bills){
-      return [];
-    }
-    return bills;
   },
   get: async (id: number, queries: IQueries) => {
     const accounts = await billRepository.getAllAndPaginate(id, buildQueryObject(queries));

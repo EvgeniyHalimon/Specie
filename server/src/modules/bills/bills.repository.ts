@@ -19,10 +19,10 @@ export const billRepository = {
           contains: queries.search,
           mode: 'insensitive',
         },
-        /* createdAt: {
-          gte: new Date('2023-08-01T17:04:33.450Z').toISOString(),
-          lte: new Date('2023-08-31T17:04:33.450Z').toISOString(),
-        }, */
+        createdAt: {
+          gte: new Date(`${queries.gteDate}T00:00:00.450Z`).toISOString(),
+          lte: new Date(`${queries.lteDate}T23:59:59.450Z`).toISOString(),
+        },
       },
       orderBy: {
         [`${queries.sortBy}`]: queries.sort,
@@ -31,9 +31,17 @@ export const billRepository = {
     const pagesCount = await bill().count({
       where: {
         userID: id,
+        comment: {
+          contains: queries.search,
+          mode: 'insensitive',
+        },
+        createdAt: {
+          gte: new Date(`${queries.gteDate}T00:00:00.450Z`).toISOString(),
+          lte: new Date(`${queries.lteDate}T23:59:59.450Z`).toISOString(),
+        },
       },
     });
-    return { data: billsData, totalPages: pagesCount / queries.take };
+    return { data: billsData, totalPages: Math.ceil(pagesCount / queries.take) };
   },
   update: async (data: any) => {
     return await bill().update({
