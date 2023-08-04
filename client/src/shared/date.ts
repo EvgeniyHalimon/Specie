@@ -36,4 +36,14 @@ const getDate = (date: string) => {
 	return `${day > 9 ? day : `0${day}`}.${month > 9 ? month : `0${month}`}.${year}`;
 };
 
-export { getDaysInMonth, currentMonthDays, currentMonth, currentYear, getMonthName, getDate };
+const lastDayOfMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+
+export {
+	getDaysInMonth,
+	currentMonthDays,
+	currentMonth,
+	currentYear,
+	getMonthName,
+	getDate,
+	lastDayOfMonth
+};

@@ -1,33 +1,65 @@
 <script lang="ts">
 	import { BillModal as Modal } from '$components';
-	import { currentMonth } from '$shared/date';
-	import type { IBill } from '$shared/types';
+	import type { IQueries } from '$shared/types';
 	import { getName } from '$shared/utils';
-	import { bills, categories, subcategories } from '$store/store';
+	import { bills, categories, subcategories, billsTotalPages } from '$store/store';
 	import TableCell from './TableCell.svelte';
 	import TableModalContent from './TableModalContent.svelte';
+	export let queries: IQueries;
 	let open = Array($bills.length).fill(false);
-	let billsByCurrentMonth = $bills.filter(
-		(item: IBill) => new Date(item.createdAt).getMonth() === currentMonth
-	);
+
+	let selectedIds: number[] = [];
+
+	let checkboxStates: Record<number, boolean> = {};
+
+	const toggleSelection = (id: number) => {
+		if (selectedIds.includes(id)) {
+			selectedIds = selectedIds.filter((selectedId) => selectedId !== id);
+		}
+		selectedIds = [...selectedIds, id];
+
+		checkboxStates[id] = selectedIds.includes(id);
+	};
 
 	const openTableModal = (index: number) => {
 		open[index] = !open[index];
+	};
+	const selectAll = () => {
+		selectedIds = $bills.map((bill) => bill.id);
+	};
+	const unselectAll = () => {
+		selectedIds = [];
+	};
+
+	const includes = (id: number) => {
+		return selectedIds.includes(id);
 	};
 </script>
 
 <table>
 	<thead>
 		<tr>
+			<th style="width: 4rem">
+				<input type="checkbox" on:change={selectAll} />
+			</th>
 			<th>Category</th>
 			<th>Subcategory</th>
 			<th>Price</th>
 		</tr>
 	</thead>
 	<tbody>
-		{#each billsByCurrentMonth as bill, index}
-			<tr on:click={() => openTableModal(index)}>
-				<td class="hover:bg-slate-300">{getName(bill.categoryID, $categories)}</td>
+		{#each $bills as bill, index}
+			<tr>
+				<td class="w-4">
+					<input
+						type="checkbox"
+						bind:checked={checkboxStates[bill.id]}
+						on:change={() => toggleSelection(bill.id)}
+					/>
+				</td>
+				<td on:click={() => openTableModal(index)} class="hover:bg-slate-300"
+					>{getName(bill.categoryID, $categories)}</td
+				>
 				<td class="border-x-[#c0c0c0] border-r border-l hover:bg-slate-300">
 					{getName(bill.subcategoryID, $subcategories)}
 				</td>
@@ -49,6 +81,7 @@
 		overflow: hidden;
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 		border-radius: 6px;
+		margin-bottom: 12px;
 		background-image: radial-gradient(
 				50% 50% at 50% 50%,
 				rgba(220, 220, 220, 0.75) 0%,

@@ -6,5 +6,6 @@ const categories = writable<Array<ICategory>>([]);
 const subcategories = writable<Array<ISubcategory>>([]);
 const filteredSubcategories = writable<Array<ISubcategory>>([]);
 const bills = writable<Array<IBill>>([]);
+const billsTotalPages = writable<number>(1);
 
-export { tokens, categories, subcategories, bills, filteredSubcategories };
+export { tokens, categories, subcategories, bills, filteredSubcategories, billsTotalPages };

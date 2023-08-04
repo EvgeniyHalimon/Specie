@@ -18,6 +18,7 @@
 
 	// Sort data by default, ascending, or descending
 	let sortedData = data;
+	console.log('🚀 ~ file: AnnualBillsChart.svelte:21 ~ sortedData:', sortedData);
 
 	// Compute values X and Y value of Arrays
 	const x: string = Object.keys(data[0])[0]; // given d in data, returns the (ordinal) x-value

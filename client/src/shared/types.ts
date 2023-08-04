@@ -49,3 +49,13 @@ export interface IMergedByMonth {
 	month: number;
 	amount: number;
 }
+
+export interface IQueries {
+	search: string;
+	skip: number;
+	take: number;
+	sortBy: string;
+	sort: 'desc' | 'asc';
+	gteDate: string;
+	lteDate: string;
+}

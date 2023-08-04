@@ -1,3 +1,5 @@
+import type { IQueries } from './types';
+
 const apiUrl = import.meta.env.VITE_PUBLIC_API_URL;
 export const BASE_URL = apiUrl;
 
@@ -21,7 +23,8 @@ export const GET_USER = (userId: number) => `${routes.users}/${userId}`;
 
 // bills
 
-export const GET_BILLS = `${routes.bill}/`;
+export const GET_BILLS = (queries: IQueries) =>
+	`${routes.bill}/?search=${queries.search}&skip=${queries.skip}&take=${queries.take}&sortBy=${queries.sortBy}&sort=${queries.sort}&gteDate=${queries.gteDate}&lteDate=${queries.lteDate}`;
 export const POST_BILL = `${routes.bill}/`;
 export const UPDATE_BILL = `${routes.bill}/`;
 export const DELETE_BILL = `${routes.bill}/`;
