@@ -1,8 +1,10 @@
 import dotenv from 'dotenv';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'express-validation';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 
+import { serverConfig } from './config';
 import authController from './modules/authorization/authorization.controller';
 import billController from './modules/bills/bills.controller';
 import categoryController from './modules/categories/categories.controller';
@@ -10,9 +12,9 @@ import subcategoryController from './modules/subcategories/subcategories.control
 import userController from './modules/users/users.controller';
 import verifyJWT from './shared/middleware/verifyJWT';
 
+const { DB_HOST, PORT } = serverConfig;
 
 dotenv.config();
-const PORT = process.env.PORT || 4000;
 
 const app: Application = express();
 
@@ -37,6 +39,15 @@ app.use('/category', categoryController);
 app.use('/subcategory', subcategoryController);
 app.use('/bill', billController);
 
-app.listen(PORT, () => {
-  console.log('Server is running on port', PORT);
+// Connect to the MongoDB
+
+
+
+mongoose.connect(DB_HOST).then(() => {
+  app.listen(PORT, () => {
+    console.log('Server is running on port', PORT);
+  });
+}).catch((error: Error) => {
+  console.log(error.message);
+  process.exit(1);
 });

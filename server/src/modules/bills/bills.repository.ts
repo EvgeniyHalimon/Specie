@@ -1,34 +1,34 @@
-import { bill } from '../../shared/prismaClient';
+import { Bill } from '../models';
 
 export const billRepository = {
-  getAll: async (id: number) => {
-    return await bill().findMany({
+  getAll: async (id: string) => {
+    return await Bill.find({
       where: {
         id: id,
       },
     });
   },
-  update: async (id: number, data: any) => {
-    return await bill().update({
+  update: async (id: string, data: any) => {
+    return await Bill.updateOne({
       where: {
         id: id,
       },
       data: data,
     });
   },
-  deleteBill: async (id: number) => {
-    return await bill().delete({
+  deleteBill: async (id: string) => {
+    return await Bill.deleteOne({
       where: {
         id: id,
       },
     });
   },
-  create: async (id: number, data: any) => {
-    return await bill().create({
+  create: async (id: string, data: any) => {
+    return await Bill.create({
       data: {
         ...data,
         id: id,
       },
-    }); 
-  }, 
+    });
+  },
 };

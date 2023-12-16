@@ -5,6 +5,11 @@
     "fix:server": "cd server && npm run lint:fix"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.7",
     "husky": "^8.0.3"
+  },
+  "dependencies": {
+    "http-errors": "^2.0.0",
+    "uuid": "^9.0.1"
   }
 }
