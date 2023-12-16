@@ -12,7 +12,7 @@
     "moduleResolution": "NodeNext",
     "outDir": "./build",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
   },
   "ts-node": {
     "esm": true
