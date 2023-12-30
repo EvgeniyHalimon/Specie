@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const user = await userService.findByID(Number(req.body.id));
+    const user = await userService.findByID(req.params.id);
     res.json(user);
   } catch (error: any) {
     res.status(error.status).json({ 'message': error.message });

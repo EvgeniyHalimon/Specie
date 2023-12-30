@@ -1,45 +1,34 @@
+
+
 import { CustomError } from '../../shared/CustomError';
-import { IQueries } from '../../shared/types/types';
 
 import { billRepository } from './bills.repository';
 
-const buildQueryObject = (query: IQueries): IQueries => {
-  return {
-    take: Number(query.take) || 5,
-    skip: Number(query.skip) || 0,
-    search: query.search.toString() || '',
-    sortBy: query.sortBy.toString() || '',
-    sort: query.sort || 'asc',
-    gteDate: query.gteDate,
-    lteDate: query.lteDate,
-  };
-};
-
 export const billService = {
-  deleteBill: async (id: number, billIds: number[]) => {
+  deleteBill: async (id: string) => {
     try {
-      return await billRepository.deleteBills(id, billIds);
+      return await billRepository.deleteBill(id);
     } catch (error) {
       throw new CustomError({ message: 'Something went wrong when you tried to delete bill', status: error.status });
     }
   },
-  get: async (id: number, queries: IQueries) => {
-    const accounts = await billRepository.getAllAndPaginate(id, buildQueryObject(queries));
-    if (!accounts){
-      throw new CustomError({ message: 'Accounts not found', status: 404 });
+  getAllUserBills: async (id: string) => {
+    const bills = await billRepository.getAll(id);
+    if (!bills) {
+      return [];
     }
-    return accounts;
+    return bills;
   },
-  update: async (data: any) => {
-    const updatedBill = await billRepository.update(data);
-    if(!updatedBill){
+  update: async (id: string, data: any) => {
+    const updatedBill = await billRepository.update(id, data);
+    if (!updatedBill) {
       throw new CustomError({ message: 'Something went wrong when you tried to update bill', status: 409 });
     }
     return updatedBill;
   },
-  create: async (id: number, data: any) => {
+  create: async (id: string, data: any) => {
     const createdBill = await billRepository.create(id, data);
-    if(!createdBill){
+    if (!createdBill) {
       throw new CustomError({ message: 'Something went wrong when you tried to create bill', status: 401 });
     }
     return createdBill;

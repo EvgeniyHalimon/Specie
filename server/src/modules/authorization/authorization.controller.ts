@@ -38,8 +38,8 @@ router.post('/register', validate(registerSchema, {}, {}), async (req: Request, 
 
 router.get('/refresh', async (req: CustomRequest, res: Response) => {
   try {
-    const token: ITokens = await authorizationService.refreshToken(Number(req.id));
-    res.json({ refreshToken: token.refreshToken, accessToken: token.accessToken });
+    const token: ITokens = await authorizationService.refreshToken(req._id);
+    res.json({ refreshToken : token.refreshToken, accessToken: token.accessToken });
   } catch (error: any) {
     res.status(500).json({ 'message': error.message });
   }

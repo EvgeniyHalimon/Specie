@@ -1,71 +1,33 @@
-import { bill } from '../../shared/prismaClient';
-import { IQueries } from '../../shared/types/types';
+import { Bill } from '../models';
 
 export const billRepository = {
-  getAll: async (id: number) => {
-    return await bill().findMany({
+  getAll: async (id: string) => {
+    return await Bill.find({
       where: {
-        userID: id,
+        id: id,
       },
     });
   },
-  getAllAndPaginate: async (id: number, queries: IQueries) => {
-    const billsData = await bill().findMany({
-      skip: queries.skip,
-      take: queries.take,
+  update: async (id: string, data: any) => {
+    return await Bill.updateOne({
       where: {
-        userID: id,
-        comment: {
-          contains: queries.search,
-          mode: 'insensitive',
-        },
-        createdAt: {
-          gte: new Date(`${queries.gteDate}T00:00:00.450Z`).toISOString(),
-          lte: new Date(`${queries.lteDate}T23:59:59.450Z`).toISOString(),
-        },
-      },
-      orderBy: {
-        [`${queries.sortBy}`]: queries.sort,
-      },
-    });
-    const pagesCount = await bill().count({
-      where: {
-        userID: id,
-        comment: {
-          contains: queries.search,
-          mode: 'insensitive',
-        },
-        createdAt: {
-          gte: new Date(`${queries.gteDate}T00:00:00.450Z`).toISOString(),
-          lte: new Date(`${queries.lteDate}T23:59:59.450Z`).toISOString(),
-        },
-      },
-    });
-    return { data: billsData, totalPages: Math.ceil(pagesCount / queries.take) };
-  },
-  update: async (data: any) => {
-    return await bill().update({
-      where: {
-        id: data.id,
+        id: id,
       },
       data: data,
     });
   },
-  deleteBills: async (id: number, billIds: number[]) => {
-    return await bill().deleteMany({
+  deleteBill: async (id: string) => {
+    return await Bill.deleteOne({
       where: {
-        id: {
-          in: billIds,
-        },
-        userID: id,
+        id: id,
       },
     });
   },
-  create: async (id: number, data: any) => {
-    return await bill().create({
+  create: async (id: string, data: any) => {
+    return await Bill.create({
       data: {
         ...data,
-        userID: id,
+        id: id,
       },
     });
   },

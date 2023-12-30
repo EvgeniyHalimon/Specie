@@ -1,7 +1,7 @@
-import { category } from '../../shared/prismaClient';
+import { Category } from '../models';
 
 export const categoryRepository = {
   getAll: async () => {
-    return await category().findMany();
+    return await Category.find();
   },
 };

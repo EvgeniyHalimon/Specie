@@ -1,48 +1,44 @@
 import { Request } from 'express';
-
 export interface CustomRequest extends Request {
-  id: number,
+  _id: string,
 }
 
 export interface IUser {
-  id?: number,
-  googleID?: string,
-  email: string,
-  password?: string,
-  firstname: string,
-  lastname: string,
-  source?: string,
-  confirmationCode: string, 
-  status: string
-}
-
-export interface IGoogleUser extends Omit<IUser, 'password'>{
-  source: string,
+  _id?: string;
+  email: string;
+  password?: string;
+  firstname: string;
+  lastname: string;
+  bills?: string[]
 }
 
 export interface IBill {
-  id: number,
-  price: number,
-  comment: string,
-  createdAt: string,
-  categoryID: number,
-  subcategoryID: number,
-  userID: number,
+  _id: string;
+  price: number;
+  comment: string;
+  category: string;
+  subcategory: string;
+  user: string;
 }
 
 export interface ICategory {
-  id: number,
-  name: string,
+  _id: string;
+  name: string;
 }
 
 export interface ISubcategory {
-  id: number,
+  _id: string;
+  name: string;
+  category: string;
+}
+
+export interface ICategory {
+  _id: string,
   name: string,
-  categoryID: number
 }
 
 export interface IDecoded {
-  userInfo: { id: number },
+  userInfo: { _id: string },
   iat: number,
   exp: number
 }

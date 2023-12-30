@@ -1,22 +1,17 @@
 {
   "compilerOptions": {
-     "lib": [
-      "ES2020"
-     ],
-    "target": "es2020",
-    "strict": false,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "outDir": "dist",
     "sourceMap": true,
-    "moduleResolution": "NodeNext",
-    "outDir": "./build",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "target": "es6",
+    // Commented
+    "allowJs": true
   },
-  "ts-node": {
-    "esm": true
-  },
+  "lib": ["es2015"],
   "exclude": [
     "node_modules",
     "build",
