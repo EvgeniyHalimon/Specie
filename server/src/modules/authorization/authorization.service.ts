@@ -2,6 +2,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt, { Secret } from 'jsonwebtoken';
 
+
+
 import { CustomError } from '../../shared/CustomError';
 import { SALT_ROUNDS } from '../../shared/constants/constants';
 
@@ -20,16 +22,16 @@ const generateTokens = (foundUser: IUser): ITokens => {
   const accessToken = jwt.sign(
     {
       'userInfo': {
-        'id': foundUser.id,
+        'id': foundUser._id,
       },
     },
     ACCESS_KEY,
-    { expiresIn: '1h' },
+    { expiresIn: '1d' },
   );
   const refreshToken = jwt.sign(
     {
       'userInfo': {
-        'id': foundUser.id,
+        'id': foundUser._id,
       },
     },
     REFRESH_KEY,
@@ -65,7 +67,7 @@ const authorizationService = {
     });
   },
   
-  refreshToken: async (id: number): Promise<ITokens | undefined> => {
+  refreshToken: async (id: string): Promise<ITokens | undefined> => {
     const foundUser = await userService.findByID(id);
     // evaluate jwt 
     if(foundUser){

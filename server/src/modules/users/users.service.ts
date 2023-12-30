@@ -1,10 +1,12 @@
+
+
 import { CustomError } from '../../shared/CustomError';
 import { IUser } from '../../shared/types/types';
 
 import { userRepository } from './users.repository';
 
 const userService = {
-  findByID : async (id: number) => {
+  findByID : async (id: string) => {
     const user = await userRepository.findUserById(id);
     if (!user){
       throw new CustomError({ message: `User ID ${id} not found`, status: 404 });

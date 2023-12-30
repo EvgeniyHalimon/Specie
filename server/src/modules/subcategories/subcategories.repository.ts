@@ -1,7 +1,8 @@
-import { subcategory } from '../../shared/prismaClient';
+import { Subcategory } from '../models';
+
 
 export const subcategoryRepository = {
   getAll: async () => {
-    return await subcategory().findMany();
+    return await Subcategory.find();
   },
 };
