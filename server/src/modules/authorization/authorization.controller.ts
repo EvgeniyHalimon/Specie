@@ -1,4 +1,4 @@
-import express, { Response, Request } from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import { validate } from 'express-validation';
 import passport from 'passport';
 
@@ -11,7 +11,7 @@ import { registerSchema } from './validators/registerSchema';
 
 const router = express.Router();
 
-router.post('/login', validate(loginSchema, {}, {}), async (req: any, res: Response) => {
+router.post('/login', validate(loginSchema, {}, {}), async (req: CustomRequest, res: Response) => {
   try {
     const token: ITokens = await authorizationService.login(req?.user || req.body);
     if(!token){
@@ -53,7 +53,7 @@ router.get('/confirm/:confirmationCode', async (req: Request, res: Response) => 
   }
 });
 
-function isLoggedIn(req, res, next) {
+function isLoggedIn(req: CustomRequest, res: Response, next: NextFunction) {
   req.user ? next() : res.sendStatus(401);
 }
 

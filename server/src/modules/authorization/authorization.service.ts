@@ -2,8 +2,6 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt, { Secret } from 'jsonwebtoken';
 
-
-
 import { CustomError } from '../../shared/CustomError';
 import { SALT_ROUNDS } from '../../shared/constants/constants';
 

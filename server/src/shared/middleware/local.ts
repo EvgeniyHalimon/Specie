@@ -5,7 +5,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { userService } from '../../modules/users/users.service';
 
 passport.use(new LocalStrategy(
-  async function (email, password, done) {
+  async function (email: string, password: any, done: any) {
     console.log('LOCAL');
     const currentUser = await userService.checkIfUserExist(email);
 

@@ -10,6 +10,20 @@ export interface IUser {
   firstname: string;
   lastname: string;
   bills?: string[]
+  googleID?: string,
+  source?: string,
+  confirmationCode: string, 
+  status: string
+}
+
+export interface IGoogleUser extends Omit<IUser, 'password'>{
+  source: string,
+  _id?: string;
+  email: string;
+  password?: string;
+  firstname: string;
+  lastname: string;
+  bills?: string[]
 }
 
 export interface IBill {
