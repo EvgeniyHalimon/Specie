@@ -4,7 +4,7 @@ export interface ITokens {
 }
 
 export interface IBill {
-	id: number;
+	_id: number;
 	price: number;
 	comment: string;
 	createdAt: string;
@@ -14,12 +14,12 @@ export interface IBill {
 }
 
 export interface ICategory {
-	id: number;
+	_id: number;
 	name: string;
 }
 
 export interface ISubcategory {
-	id: number;
+	_id: number;
 	name: string;
 	categoryID: number;
 }

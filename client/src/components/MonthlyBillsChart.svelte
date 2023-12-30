@@ -95,7 +95,7 @@
 						color: i
 					});
 				});
-				subsets.push(subset.id);
+				subsets.push(subset._id);
 			});
 		}
 	}

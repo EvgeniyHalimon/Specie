@@ -25,7 +25,7 @@
 		open[index] = !open[index];
 	};
 	const selectAll = () => {
-		selectedIds = $bills.map((bill) => bill.id);
+		selectedIds = $bills.map((bill) => bill._id);
 	};
 	const unselectAll = () => {
 		selectedIds = [];
@@ -53,8 +53,8 @@
 				<td class="w-4">
 					<input
 						type="checkbox"
-						bind:checked={checkboxStates[bill.id]}
-						on:change={() => toggleSelection(bill.id)}
+						bind:checked={checkboxStates[bill._id]}
+						on:change={() => toggleSelection(bill._id)}
 					/>
 				</td>
 				<td on:click={() => openTableModal(index)} class="hover:bg-slate-300"
